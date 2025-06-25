@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- This page provides the interface for students to apply for exeats -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exeat Application</title>
+    <link rel="stylesheet" href="application.css" />
+    <script type="module" src="firebase.js" defer></script>
+    <style>
+      .progress-container {
+        margin: 20px 0;
+        text-align: center;
+      }
+      .progress-bar {
+        width: 100%;
+        background-color: #f3f3f3;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+        height: 20px;
+      }
+      .progress {
+        height: 100%;
+        background-color: #4caf50;
+        transition: width 0.3s ease;
+      }
+      .notification-dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .notification-toggle {
+        background-color: #4caf4f00;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-left: 10px;
+      }
+      .notification-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 40px;
+        background-color: #fff;
+        width: 340px;
+        min-height: 60px;
+        max-height: 320px;
+        overflow-y: auto;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        border-radius: 10px;
+        padding: 10px 0 10px 0;
+        z-index: 1000;
+        color: #222;
+        font-size: 15px;
+      }
+      .notification-content div {
+        padding: 10px 18px;
+        border-bottom: 1px solid #eee;
+        word-break: break-word;
+      }
+      .notification-content div:last-child {
+        border-bottom: none;
+      }
+      .notification-content p {
+        margin: 0;
+        padding: 18px 0 8px 0;
+        color: #888;
+        text-align: center;
+        font-size: 16px;
+      }
+      .notification-content.show {
+        display: block;
+      }
+      .green-btn {
+        background-color: #4caf4f00 !important;
+        color: #fff !important;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        box-shadow: 0 2px 8px rgba(39,201,64,0.08);
+        transition: background 0.2s;
+      }
+      .green-btn:hover {
+        background-color: rgba(134, 50, 199, 0.74) !important;
+      }
+      .clear-notifications-btn {
+        background: #f44336;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 12px 0;
+        margin: 12px 18px 10px 18px;
+        width: calc(100% - 36px);
+        box-shadow: 0 2px 8px rgba(244,67,54,0.08);
+        transition: background 0.2s;
+        display: block;
+      }
+      .clear-notifications-btn:hover {
+        background: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top section with a greeting -->
+    <div class="top-s">Hello</div>
+    <nav>
+        <!-- Logo section -->
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="93px" height="64px">
+            <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
+        </div>
+        <!-- Navigation links -->
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html" class="active">Apply for Exeat</a>
+            <a href="dynamic_history.html">History</a>
+            <a href="progress.html">Track Progress</a>
+        </div>
+    </nav>
+    <div class="container">
+      <!-- Exeat application form -->
+      <h1>Exeat Application Form</h1>
+      <form id="contactForm">
+        <!-- Input for matric number -->
+        <input type="text" placeholder="Matric No" id="matricNo" required />
+        <!-- Input for student's email -->
+        <input type="email" placeholder="Student's Email Address" id="studentEmail" required />
+        <!-- Input for parent/guardian's email -->
+        <input type="email" placeholder="Parent/Guardian's Email Address" id="parentEmail" required />
+        <!-- Textarea for the reason for the exeat request -->
+        <textarea
+          placeholder="State your reason for the exeat request"
+          rows="4"
+          id="message"
+          required
+        ></textarea>
+        <!-- Submit button -->
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    <footer>
+      <!-- Footer section -->
+      &copy; MTU 2025. All rights reserved.
+    </footer>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+      document.addEventListener("DOMContentLoaded", function() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+            authDomain: "exeatregister.firebaseapp.com",
+            databaseURL: "https://exeatregister-default-rtdb.firebaseio.com",
+            projectId: "exeatregister",
+            storageBucket: "exeatregister.firebasestorage.app",
+            messagingSenderId: "572897522310",
+            appId: "1:572897522310:web:8c588bb399825e360ad707",
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const submissionsRef = ref(db, "contactForm");
+        const form = document.getElementById("contactForm");
+        if (form) {
+          form.addEventListener("submit", submitForm);
+        }
+        function submitForm(e) {
+          e.preventDefault();
+          const matricNo = document.getElementById("matricNo").value.trim();
+          const studentEmail = document.getElementById("studentEmail").value.trim().toLowerCase();
+          const parentEmail = document.getElementById("parentEmail").value.trim().toLowerCase();
+          const message = document.getElementById("message").value.trim();
+          // Debug output
+          console.log('DEBUG: Submitting exeat with:', {matricNo, studentEmail, parentEmail, message});
+          // Save all fields, including email
+          push(submissionsRef, {
+            matricNo,
+            email: studentEmail,
+            parentEmail,
+            message,
+            status: "Submitted",
+            timestamp: Date.now()
+          }).then(() => {
+            alert("Exeat request submitted successfully!");
+            form.reset();
+          }).catch((err) => {
+            alert("Error submitting exeat request: " + err.message);
+          });
+        }
+
+        // Example function to update progress bar dynamically
+        function updateProgressBar(status) {
+          const progress = document.getElementById('progress');
+          const progressText = document.getElementById('progressText');
+
+          if (status === 'submitted') {
+            progress.style.width = '33%';
+            progressText.textContent = 'Status: Submitted';
+          } else if (status === 'approved') {
+            progress.style.width = '66%';
+            progressText.textContent = 'Status: Approved';
+          } else if (status === 'completed') {
+            progress.style.width = '100%';
+            progressText.textContent = 'Status: Completed';
+          } else {
+            progress.style.width = '0%';
+            progressText.textContent = 'Status: Not Submitted';
+          }
+        }
+
+        // Notification dropdown logic (cleaned and fixed)
+        const notificationToggle = document.getElementById("notificationToggle");
+        const notificationContent = document.getElementById("notificationContent");
+        const notificationCount = document.getElementById("notificationCount");
+        let notificationKeys = [];
+        const clearBtn = document.getElementById('clearNotificationsBtn');
+
+        if (notificationToggle) {
+          notificationToggle.addEventListener("click", (e) => {
+              e.stopPropagation();
+              if (notificationContent) notificationContent.classList.toggle("show");
+          });
+        }
+        document.addEventListener("click", () => {
+            if (notificationContent) notificationContent.classList.remove("show");
+        });
+
+        onValue(submissionsRef, (snapshot) => {
+            let unreadNotifications = 0;
+            notificationContent.innerHTML = "";
+            notificationKeys = [];
+            if (!snapshot.exists()) {
+                notificationContent.innerHTML = "<p>No new notifications</p>";
+                notificationContent.appendChild(clearBtn);
+                return;
+            }
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                if (data.email === loggedInUserEmail && data.status) {
+                    notificationKeys.push(childSnapshot.key);
+                    const notificationItem = document.createElement("div");
+                    if (data.status === "Approved") {
+                        notificationItem.textContent = "Your exeat is ready for printing.";
+                        unreadNotifications++;
+                        notificationContent.appendChild(notificationItem);
+                    } else if (data.status === "Rejected") {
+                        notificationItem.textContent = "Your exeat was rejected.";
+                        unreadNotifications++;
+                        notificationContent.appendChild(notificationItem);
+                    }
+                }
+            });
+            if (notificationContent.innerHTML === "") {
+                notificationContent.innerHTML = "<p>No new notifications</p>";
+            }
+            notificationContent.appendChild(clearBtn);
+            notificationCount.textContent = unreadNotifications;
+        });
+
+        if (clearBtn && notificationContent && notificationCount) {
+          clearBtn.onclick = function() {
+              notificationContent.innerHTML = "<p>No new notifications</p>";
+              notificationContent.appendChild(clearBtn);
+              notificationCount.textContent = '0';
+          };
+        }
+      });
+    </script>
+  </body>
+</html>

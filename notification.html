@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification Access</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="93px" height="64px">
+            <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html">Apply for Exeat</a>
+            <a href="dynamic_history.html">History</a>
+            <a href="progress.html">Track Progress</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </nav>
+    <div class="notifications-container">
+        <h1>Notifications</h1>
+        <ul id="notificationsList" class="notifications-list"></ul>
+        <button id="cancelNotification" class="cancel-notification">Cancel</button>
+        <button id="clearNotificationsBtn" class="clear-notifications-btn">Clear Notifications</button>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+            authDomain: "exeatregister.firebaseapp.com",
+            databaseURL: "https://exeatregister-default-rtdb.firebaseio.com",
+            projectId: "exeatregister",
+            storageBucket: "exeatregister.firebasestorage.app",
+            messagingSenderId: "572897522310",
+            appId: "1:572897522310:web:8c588bb399825e360ad707",
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const notificationsList = document.getElementById("notificationsList");
+        const loggedInUserEmail = localStorage.getItem("loggedInUserEmail");
+        const submissionsRef = ref(db, "contactForm");
+        const notificationToggle = document.getElementById("notificationToggle");
+        const notificationContent = document.getElementById("notificationContent");
+        const notificationCount = document.getElementById("notificationCount");
+        const cancelNotification = document.getElementById("cancelNotification");
+        let notificationKeys = [];
+        onValue(submissionsRef, (snapshot) => {
+            notificationsList.innerHTML = "";
+            let hasNotification = false;
+            notificationKeys = [];
+            let unreadNotifications = 0;
+            notificationContent.innerHTML = "";
+            if (!snapshot.exists()) {
+                notificationsList.innerHTML = "<li>No notifications yet.</li>";
+                notificationContent.innerHTML = "<p>No new notifications</p>";
+                notificationContent.appendChild(cancelNotification);
+                notificationContent.appendChild(document.getElementById('clearNotificationsBtn'));
+                return;
+            }
+            snapshot.forEach((childSnapshot) => {
+                const data = childSnapshot.val();
+                if (data.email === loggedInUserEmail && data.status && (data.status === "Approved" || data.status === "Rejected")) {
+                    hasNotification = true;
+                    notificationKeys.push(childSnapshot.key);
+                    const li = document.createElement("li");
+                    li.className = data.status === "Approved" ? "notification-approved" : "notification-rejected";
+                    li.style.textAlign = 'justify';
+                    li.innerHTML = `
+                        <strong>${data.status === "Approved" ? "Exeat Approved" : "Exeat Rejected"}</strong><br>
+                        ${data.status === "Approved" ? "Your exeat has been approved. You can now print your letter from the history page." : `Your exeat was rejected. Reason: ${data.rejectionReason || "No reason provided."}`}
+                        <br><span class="notification-date">${data.date ? new Date(data.date).toLocaleString() : ""}</span>
+                    `;
+                    notificationsList.appendChild(li);
+                    const notificationItem = document.createElement("div");
+                    if (data.status === "Approved") {
+                        notificationItem.textContent = "Your exeat is ready for printing.";
+                        unreadNotifications++;
+                    } else if (data.status === "Rejected") {
+                        notificationItem.textContent = `Your exeat was rejected. Reason: ${data.rejectionReason || "No reason provided."}`;
+                        unreadNotifications++;
+                    }
+                    notificationContent.appendChild(notificationItem);
+                }
+            });
+            if (!hasNotification) {
+                notificationsList.innerHTML = "<li>No notifications yet.</li>";
+            }
+            if (notificationContent.innerHTML === "") {
+                notificationContent.innerHTML = "<p>No new notifications</p>";
+            }
+            notificationContent.appendChild(cancelNotification);
+            notificationContent.appendChild(document.getElementById('clearNotificationsBtn'));
+            notificationCount.textContent = unreadNotifications;
+        });
+        // Clear notifications logic
+        document.getElementById('clearNotificationsBtn').onclick = async function() {
+            const { getDatabase, ref, update } = await import('https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js');
+            const db = getDatabase();
+            const keys = notificationKeys || [];
+            for (const key of keys) {
+                await update(ref(db, `contactForm/${key}`), { status: null, rejectionReason: null });
+            }
+            notificationsList.innerHTML = "<li>No notifications yet.</li>";
+            notificationContent.innerHTML = "<p>No new notifications</p>";
+            notificationContent.appendChild(cancelNotification);
+            notificationContent.appendChild(document.getElementById('clearNotificationsBtn'));
+            notificationCount.textContent = '0';
+        };
+    </script>
+    <style>
+        .notifications-container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); padding: 32px; }
+        .notifications-list { list-style: none; padding: 0; }
+        .notifications-list li { margin-bottom: 24px; padding: 18px; border-radius: 8px; font-size: 16px; text-align: justify; }
+        .notification-approved { background: #e8f5e9; color: #388e3c; border-left: 5px solid #60c258; }
+        .notification-rejected { background: #ffebee; color: #c62828; border-left: 5px solid #ff4d4d; }
+        .notification-date { display: block; color: #888; font-size: 13px; margin-top: 8px; }
+        .clear-notifications-btn {
+            background: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 auto;
+            display: block;
+        }
+        .clear-notifications-btn:hover {
+            background: #d32f2f;
+        }
+        .notification-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .notification-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            padding: 12px;
+            border-radius: 5px;
+        }
+        .notification-dropdown:hover .notification-content {
+            display: block;
+        }
+    </style>
+</body>
+</html>

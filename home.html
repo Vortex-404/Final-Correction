@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- This is the homepage for logged-in users -->
+    <meta charset="UTF-8" />
+    <title>Exeat Recreation</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .notification-dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .notification-toggle {
+        background-color: #4caf4f00;
+        color: white;
+        padding: 6px 10px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: none;
+        min-width: unset;
+        height: 36px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .notification-toggle:hover {
+        background-color: rgba(134, 50, 199, 0.74);
+
+      }
+      .notification-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 40px;
+        background-color: #fff;
+        width: 340px;
+        min-height: 60px;
+        max-height: 320px;
+        overflow-y: auto;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        border-radius: 10px;
+        padding: 10px 0 10px 0;
+        z-index: 1000;
+        color: #222;
+        font-size: 15px;
+      }
+      .notification-content div {
+        padding: 10px 18px;
+        border-bottom: 1px solid #eee;
+        word-break: break-word;
+      }
+      .notification-content div:last-child {
+        border-bottom: none;
+      }
+      .notification-content p {
+        margin: 0;
+        padding: 18px 0 8px 0;
+        color: #888;
+        text-align: center;
+        font-size: 16px;
+      }
+      .notification-content.show {
+        display: block;
+      }
+      .clear-notifications-btn {
+        background: #f44336;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 12px 0;
+        margin: 12px 18px 10px 18px;
+        width: calc(100% - 36px);
+        box-shadow: 0 2px 8px rgba(244,67,54,0.08);
+        transition: background 0.2s;
+        display: block;
+      }
+      .clear-notifications-btn:hover {
+        background: #d32f2f;
+      }
+      .green-btn {
+        background: #27c93f03 !important;
+        color: #fff !important;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        box-shadow: 0 2px 8px rgba(39,201,64,0.08);
+        transition: background 0.2s;
+      }
+      .green-btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top section with a greeting -->
+    <div class="top-s"></div>
+    <nav>
+        <!-- Logo section -->
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="93px" height="64px">
+            <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
+        </div>
+        <!-- Navigation links -->
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html">Apply for Exeat</a>
+            <a href="dynamic_history.html">History</a>
+            <a href="progress.html">Track Progress</a>
+        </div>
+    </nav>
+    <main>
+      <!-- Hero section with application details -->
+      <div class="hero">
+        <div class="content">
+          <!-- Main content section -->
+            <div class="text-section">
+                <h1>Get your exeat at<br>the comfort of your room.</h1>
+                <p>You do not need to go through the stress of going to different offices to 
+                    get exeat anymore, that is too stressful. <br>We've 'gat' you covered.</p>
+                <!-- Button to navigate to the registration page -->
+                <a href="exeat_page.html"><button>APPLY FOR EXEAT</button></a>
+            </div>
+            <!-- Placeholder for an image -->
+            <div class="image-placeholder">
+                <img src="./z-images/pexels-114876813-9736688.jpg" alt="Northern Lights" width="624px" height="460px">
+            </div>
+        </div>
+      </div>
+      <!-- Additional hero section -->
+      <div class="hero">
+        <div class="content">
+          <div class="image-placeholder">
+            <img
+              src="./z-images/stuck.jpg"
+              alt="stuck"
+              width="624px"
+              height="460px"
+            />
+          </div>
+          <div class="text-section">
+            <h1>Already applied for exeat? Track its progress.</h1>
+            <p>
+              You want to leave so bad, why? Just relax, pack you bags <br />and
+              track you exeat progress here.
+            </p>
+            <!-- Button to navigate to the history page -->
+            <a href="dynamic_history.html"><button>TRACK EXEAT PROGRESS</button></a>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <!-- Footer section -->
+        <p>&copy; MTU 2025. All Rights Reserved.</p>
+      </footer>
+    </main>
+    <script type="module">
+      import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+      import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+        authDomain: "exeatregister.firebaseapp.com",
+        databaseURL: "https://exeatregister-default-rtdb.firebaseio.com",
+        projectId: "exeatregister",
+        storageBucket: "exeatregister.firebasestorage.app",
+        messagingSenderId: "572897522310",
+        appId: "1:572897522310:web:8c588bb399825e360ad707",
+      };
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+      // Function to display alerts
+      function showAlert(message, isSuccess) {
+        const alertBox = document.createElement("div");
+        alertBox.textContent = message;
+        alertBox.style.position = "fixed";
+        alertBox.style.top = "20px";
+        alertBox.style.right = "20px";
+        alertBox.style.padding = "15px";
+        alertBox.style.borderRadius = "8px";
+        alertBox.style.color = "#fff";
+        alertBox.style.backgroundColor = isSuccess ? "#60c258" : "#ff4d4d";
+        alertBox.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+        alertBox.style.zIndex = "1000";
+        document.body.appendChild(alertBox);
+
+        // Remove the alert after 3 seconds
+        setTimeout(() => {
+          alertBox.remove();
+        }, 3000);
+      }
+
+      // Logout functionality
+      const logoutButton = document.getElementById("logoutButton");
+      if (logoutButton) {
+        logoutButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          localStorage.removeItem("loggedInUserEmail");
+          // Styled logout alert
+          const alertBox = document.createElement("div");
+          alertBox.textContent = "Logged out successfully!";
+          alertBox.style.position = "fixed";
+          alertBox.style.top = "30px";
+          alertBox.style.right = "30px";
+          alertBox.style.padding = "18px 28px";
+          alertBox.style.borderRadius = "10px";
+          alertBox.style.color = "#fff";
+          alertBox.style.fontWeight = "600";
+          alertBox.style.fontSize = "17px";
+          alertBox.style.letterSpacing = "0.5px";
+          alertBox.style.background = "linear-gradient(90deg, #60c258 60%, #388e3c 100%)";
+          alertBox.style.boxShadow = "0 6px 18px rgba(0,0,0,0.18)";
+          alertBox.style.zIndex = "2000";
+          alertBox.style.transition = "opacity 0.3s";
+          document.body.appendChild(alertBox);
+          setTimeout(() => {
+            alertBox.style.opacity = 0;
+            setTimeout(() => {
+              alertBox.remove();
+              window.location.href = "index.html";
+            }, 400);
+          }, 1800);
+        });
+      }
+
+      // Notification dropdown logic (cleaned and fixed)
+      const notificationToggle = document.getElementById("notificationToggle");
+      const notificationContent = document.getElementById("notificationContent");
+      const notificationCount = document.getElementById("notificationCount");
+      let notificationKeys = [];
+      const clearBtn = document.getElementById('clearNotificationsBtn');
+
+      notificationToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        notificationContent.classList.toggle("show");
+      });
+      document.addEventListener("click", () => {
+        notificationContent.classList.remove("show");
+      });
+
+      const submissionsRef = ref(db, "contactForm");
+      const loggedInUserEmail = localStorage.getItem("loggedInUserEmail");
+
+      onValue(submissionsRef, (snapshot) => {
+        let unreadNotifications = 0;
+        notificationContent.innerHTML = "";
+        notificationKeys = [];
+        if (!snapshot.exists()) {
+          notificationContent.innerHTML = "<p>No new notifications</p>";
+          notificationContent.appendChild(clearBtn);
+          return;
+        }
+        snapshot.forEach((childSnapshot) => {
+          const data = childSnapshot.val();
+          if (data.email === loggedInUserEmail && data.status) {
+            notificationKeys.push(childSnapshot.key);
+            const notificationItem = document.createElement("div");
+            if (data.status === "Approved") {
+              notificationItem.textContent = "Your exeat is ready for printing.";
+              unreadNotifications++;
+              notificationContent.appendChild(notificationItem);
+            } else if (data.status === "Rejected") {
+              notificationItem.textContent = "Your exeat was rejected.";
+              unreadNotifications++;
+              notificationContent.appendChild(notificationItem);
+            }
+          }
+        });
+        if (notificationContent.innerHTML === "") {
+          notificationContent.innerHTML = "<p>No new notifications</p>";
+        }
+        notificationContent.appendChild(clearBtn);
+        notificationCount.textContent = unreadNotifications;
+      });
+
+      clearBtn.onclick = function() {
+        notificationContent.innerHTML = "<p>No new notifications</p>";
+        notificationContent.appendChild(clearBtn);
+        notificationCount.textContent = '0';
+      };
+
+      // Notification popup for approval/rejection
+      let lastStatusMap = {};
+
+      function showPopupNotification(message, isSuccess) {
+        const alertBox = document.createElement("div");
+        alertBox.textContent = message;
+        alertBox.style.position = "fixed";
+        alertBox.style.top = "20px";
+        alertBox.style.right = "20px";
+        alertBox.style.padding = "15px";
+        alertBox.style.borderRadius = "8px";
+        alertBox.style.color = "#fff";
+        alertBox.style.backgroundColor = isSuccess ? "#60c258" : "#ff4d4d";
+        alertBox.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+        alertBox.style.zIndex = "1000";
+        document.body.appendChild(alertBox);
+        setTimeout(() => { alertBox.remove(); }, 4000);
+      }
+
+      onValue(submissionsRef, (snapshot) => {
+        snapshot.forEach((childSnapshot) => {
+          const data = childSnapshot.val();
+          if (data.email === loggedInUserEmail) {
+            if (data.status && lastStatusMap[childSnapshot.key] !== data.status) {
+              if (data.status === "Approved") {
+                showPopupNotification("Exeat has been approved, check the history page to print it.", true);
+              } else if (data.status === "Rejected") {
+                showPopupNotification("Exeat has been rejected. Check the history page to see the reason why.", false);
+              }
+            }
+            lastStatusMap[childSnapshot.key] = data.status;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

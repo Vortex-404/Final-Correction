@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dean Exeat Approval</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        .dean-approval-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .hod-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 4px 24px rgba(100, 207, 91, 0.08), 0 1.5px 8px #e0e0e0;
+            margin-bottom: 36px;
+            padding: 32px 28px 24px 28px;
+            transition: box-shadow 0.2s;
+        }
+        .hod-card:hover {
+            box-shadow: 0 8px 32px rgba(134, 50, 199, 0.12), 0 2px 12px #e0e0e0;
+        }
+        .hod-card .matric {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6a11cb;
+            margin-bottom: 8px;
+        }
+        .hod-card .status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: #f3f3f3;
+            color: #6a11cb;
+        }
+        .hod-card .status-badge.approved { background: #e6fbe6; color: #4caf50; }
+        .hod-card .status-badge.rejected { background: #ffeaea; color: #d32f2f; }
+        .hod-card .status-badge.pending { background: #f3f3f3; color: #6a11cb; }
+        .hod-card .info-row { margin-bottom: 10px; }
+        .hod-card .info-label { font-weight: 600; color: #333; }
+        .hod-card .info-value { color: #444; }
+        .hod-card pre {
+            background: #f8f8f8;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin: 0 0 12px 0;
+        }
+        .hod-card textarea {
+            width: 100%;
+            margin: 12px 0 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            resize: vertical;
+        }
+        .hod-card .action-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 10px;
+        }
+        .hod-card button {
+            padding: 10px 28px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .hod-card .approve-btn {
+            background: linear-gradient(90deg, #64cf5b 60%, #6a11cb 100%);
+            color: #fff;
+        }
+        .hod-card .approve-btn:hover {
+            background: linear-gradient(90deg, #6a11cb 0%, #64cf5b 100%);
+        }
+        .hod-card .reject-btn {
+            background: #d32f2f;
+            color: #fff;
+        }
+        .hod-card .reject-btn:hover {
+            background: #b71c1c;
+        }
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+        .close-modal-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            margin-top: -10px;
+        }
+        .close-modal-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-s">Dean Exeat Approval</div>
+    <nav>
+        <!-- Logo section -->
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="93px" height="64px">
+            <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html">Apply for Exeat</a>
+            <a href="dynamic_history.html">History</a>
+            <a href="progress.html">Track Progress</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </nav>
+    <div class="admin-container" style="max-width:800px;margin:40px auto;">
+        <div class="dean-approval-header">
+            <h1 style="color:#6a11cb;">Dean Exeat Approval</h1>
+            <p style="color:#555;font-size:17px;">Review and process all exeat requests. Tap a request to view details and take action.</p>
+        </div>
+        <h1>Review Exeat Requests</h1>
+        <div id="requestsList"></div>
+        <div id="deanMessage" style="margin-top:24px;font-weight:600;"></div>
+    </div>
+    <footer>
+        <p>&copy; MTU 2025. All Rights Reserved.</p>
+    </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+        // TODO: Replace with your actual EmailJS user ID and template ID for Dean approval
+        const EMAILJS_USER_ID = 'YOUR_EMAILJS_USER_ID';
+        const DEAN_APPROVE_TEMPLATE = 'YOUR_DEAN_APPROVE_TEMPLATE_ID';
+        const DEAN_REJECT_TEMPLATE = 'YOUR_DEAN_REJECT_TEMPLATE_ID';
+        if (window.emailjs) window.emailjs.init(EMAILJS_USER_ID);
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+            authDomain: "exeatregister.firebaseapp.com",
+            databaseURL: "https://exeatregister-default-rtdb.firebaseio.com/",
+            projectId: "exeatregister",
+            storageBucket: "exeatregister.firebasestorage.app",
+            messagingSenderId: "572897522310",
+            appId: "1:572897522310:web:8c588bb399825e360ad707",
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const requestsListDiv = document.getElementById('requestsList');
+        const deanMessageDiv = document.getElementById('deanMessage');
+
+        // Modal for approval/rejection
+        let modal = null;
+        function showModal(content) {
+            if (modal) modal.remove();
+            modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `<div class="modal-content">${content}</div><button class="close-modal-btn">Close</button>`;
+            document.body.appendChild(modal);
+            modal.querySelector('.close-modal-btn').onclick = () => modal.remove();
+            modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+        }
+
+        // Fetch and display only HOD Approved requests
+        const submissionsRef = ref(db, 'contactForm');
+        onValue(submissionsRef, (snapshot) => {
+            requestsListDiv.innerHTML = '';
+            let found = false;
+            snapshot.forEach(child => {
+                const data = child.val();
+                if ((data.status||'').toLowerCase() === 'hod-approved') {
+                    found = true;
+                    const reqDiv = document.createElement('div');
+                    reqDiv.className = 'hod-card';
+                    reqDiv.innerHTML = `
+                        <div class="matric">${data.matricNo || ''}</div>
+                        <div class="status-badge approved">${data.status}</div>
+                        <div class="info-row"><span class="info-label">Student Email:</span> <span class="info-value">${data.studentEmail || data.email || ''}</span></div>
+                        <div class="info-row"><span class="info-label">Reason:</span> <span class="info-value">${data.message || ''}</span></div>
+                        <div class="info-row"><span class="info-label">Letter:</span><br><pre>${data.letter || data.message || ''}</pre></div>
+                        <div class="info-row"><span class="info-label">HOD Remark:</span> <span class="info-value">${data.hodRemark || ''}</span></div>
+                        <textarea class="dean-remark" placeholder="Enter your remark (required)"></textarea>
+                        <div class="action-row">
+                            <button class="approve-btn" data-id="${child.key}">Sign & Approve</button>
+                            <button class="reject-btn" data-id="${child.key}">Reject</button>
+                        </div>
+                    `;
+                    requestsListDiv.appendChild(reqDiv);
+                    // Approve
+                    reqDiv.querySelector('.approve-btn').onclick = async () => {
+                        const remark = reqDiv.querySelector('.dean-remark').value.trim();
+                        if (!remark) { alert('Please enter a remark.'); return; }
+                        const reqRef = ref(db, `contactForm/${child.key}`);
+                        await update(reqRef, { status: "dean-approved", deanRemark: remark });
+                        deanMessageDiv.innerHTML = '<span style="color:green;">Request signed and approved!</span>';
+                        // EmailJS notification to student
+                        if (window.emailjs && DEAN_APPROVE_TEMPLATE !== 'YOUR_DEAN_APPROVE_TEMPLATE_ID') {
+                            window.emailjs.send(DEAN_APPROVE_TEMPLATE, {
+                                student_email: data.studentEmail || data.email,
+                                matric_no: data.matricNo,
+                                dean_remark: remark,
+                                message: data.message,
+                                letter: data.letter || data.message,
+                                status: 'Dean Approved',
+                                date: new Date().toLocaleString()
+                            }).then(() => {
+                                deanMessageDiv.innerHTML += '<br><span style="color:green;">Student notified by email.</span>';
+                            }, (err) => {
+                                deanMessageDiv.innerHTML += '<br><span style="color:red;">Email notification failed: ' + err.text + '</span>';
+                            });
+                        }
+                        reqDiv.querySelector('.approve-btn').style.display = 'none';
+                        reqDiv.querySelector('.reject-btn').style.display = 'none';
+                    };
+                    // Reject
+                    reqDiv.querySelector('.reject-btn').onclick = async () => {
+                        const remark = reqDiv.querySelector('.dean-remark').value.trim();
+                        if (!remark) { alert('Please enter a remark.'); return; }
+                        const reqRef = ref(db, `contactForm/${child.key}`);
+                        await update(reqRef, { status: "dean-rejected", deanRemark: remark });
+                        deanMessageDiv.innerHTML = '<span style="color:red;">Request rejected.</span>';
+                        // Optionally notify student
+                        if (window.emailjs && DEAN_REJECT_TEMPLATE !== 'YOUR_DEAN_REJECT_TEMPLATE_ID') {
+                            window.emailjs.send(DEAN_REJECT_TEMPLATE, {
+                                student_email: data.studentEmail || data.email,
+                                matric_no: data.matricNo,
+                                dean_remark: remark,
+                                message: data.message,
+                                letter: data.letter || data.message,
+                                status: 'Dean Rejected',
+                                date: new Date().toLocaleString()
+                            }).then(() => {
+                                deanMessageDiv.innerHTML += '<br><span style="color:green;">Student notified by email.</span>';
+                            }, (err) => {
+                                deanMessageDiv.innerHTML += '<br><span style="color:red;">Email notification failed: ' + err.text + '</span>';
+                            });
+                        }
+                        reqDiv.querySelector('.approve-btn').style.display = 'none';
+                        reqDiv.querySelector('.reject-btn').style.display = 'none';
+                    };
+                }
+            });
+            if (!found) {
+                requestsListDiv.innerHTML = '<span style="color:#888;">No requests awaiting Dean approval.</span>';
+            }
+        });
+    </script>
+</body>
+</html>

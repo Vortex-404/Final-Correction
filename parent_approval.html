@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Exeat Approval</title>
+    <style>
+        body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #f4f4f4; color: #222; font-family: 'Poppins', Arial, sans-serif; }
+        .approval-msg { background: #fff; border: 1px solid #b6e0a6; padding: 40px 60px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); text-align: center; }
+        h1 { color: #2e7d32; }
+        .error { color: #b71c1c; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .Logo img { width: 93px; height: 64px; }
+        .nav-links a { margin: 0 15px; text-decoration: none; color: #333; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="approval-msg">
+        <h1>Exeat Approval Response</h1>
+        <div class="status" id="statusMsg">Processing...</div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getDatabase, ref, update, get } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+            authDomain: "exeatregister.firebaseapp.com",
+            databaseURL: "https://exeatregister-default-rtdb.firebaseio.com/",
+            projectId: "exeatregister",
+            storageBucket: "exeatregister.firebasestorage.app",
+            messagingSenderId: "572897522310",
+            appId: "1:572897522310:web:8c588bb399825e360ad707",
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const requestId = getQueryParam('requestId');
+        const action = getQueryParam('action');
+        const statusMsg = document.getElementById('statusMsg');
+
+        console.log('DEBUG: requestId =', requestId, 'action =', action);
+
+        async function notifyNextStep(status, data) {
+            if (status === 'parent-approved') {
+                console.log('DEBUG: Parent approved. Data:', data);
+            } else if (status === 'parent-rejected') {
+                console.log('DEBUG: Parent rejected. Data:', data);
+            }
+        }
+
+        if (requestId && (action === 'approve' || action === 'reject')) {
+            const newStatus = action === 'approve' ? 'parent-approved' : 'parent-rejected';
+            console.log('DEBUG: Setting status to', newStatus, 'for', requestId);
+            get(ref(db, `contactForm/${requestId}`)).then(snapshot => {
+                const data = snapshot.val();
+                console.log('DEBUG: Loaded data from Firebase:', data);
+                update(ref(db, `contactForm/${requestId}`), { status: newStatus })
+                    .then(async () => {
+                        console.log('DEBUG: Status updated to', newStatus, 'for', requestId);
+                        statusMsg.textContent = `Thank you! You have successfully ${action === 'approve' ? 'approved' : 'rejected'} the exeat request.`;
+                        await notifyNextStep(newStatus, data);
+                    })
+                    .catch((err) => {
+                        console.error('DEBUG: Error updating status:', err);
+                        statusMsg.textContent = 'There was an error processing your response. Please try again later.';
+                        statusMsg.classList.add('error');
+                    });
+            }).catch((err) => {
+                console.error('DEBUG: Error loading data from Firebase:', err);
+                statusMsg.textContent = 'Invalid approval link.';
+                statusMsg.classList.add('error');
+            });
+        } else {
+            console.error('DEBUG: Invalid approval link. requestId:', requestId, 'action:', action);
+            statusMsg.textContent = 'Invalid approval link.';
+            statusMsg.classList.add('error');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+/* General reset and body styling */
+body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Admin container styling */
+.admin-container {
+    margin: 80px auto;
+    width: 95%; /* Reduced width slightly to ensure content fits */
+    max-width: 1200px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    white-space: normal; /* Allow content to wrap */
+    overflow-x: auto; /* Enable horizontal scrolling if necessary */
+}
+
+/* Heading styling */
+h1 {
+    text-align: center;
+    color: #6a11cb;
+    margin-bottom: 20px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed; /* Ensure columns have fixed widths */
+}
+
+table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    word-wrap: break-word; /* Allow breaking long words */
+}
+
+table td:nth-child(3) {
+    max-width: 700px; /* Set max width for the message column */
+    word-wrap: break-word; /* Allow breaking long words */
+    white-space: normal; /* Allow text to wrap to the next line */
+    overflow: hidden; /* Hide overflow content */
+}
+
+table th {
+    background-color: #84b000;
+    color: white;
+}
+
+/* Button styling */
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.approve-btn {
+    background-color: #60c258;
+    color: white;
+}
+
+button.approve-btn:hover {
+    background-color: #4da048;
+}
+
+button.reject-btn {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+button.reject-btn:hover {
+    background-color: #e63939;
+}
+
+/* Top section and navigation bar styling */
+.top-s,
+nav {
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 10px;
+    position: sticky;
+    z-index: 100;
+    top: 0px;
+    width: 100%;
+    background: white;
+    backdrop-filter: blur(500px);
+    color: #fff;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 84px; /* Match the height of the history page nav bar */
+    background: linear-gradient(45deg, rgb(100, 207, 91), rgba(134, 50, 199, 0.74));
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(500px);
+}
+
+/* Logo styling */
+.Logo {
+    font-weight: 600;
+    font-size: 19px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.Logo img {
+    border-radius: 5px;
+}
+
+/* Navigation links styling */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #84b000;
+}
+
+.nav-links a.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #84b000;
+}
+
+/* Footer styling */
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #bebbbba8;
+    color: #000;
+    font-size: 14px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    padding-top: 7px;
+    backdrop-filter: blur(500px);
+    z-index: 10;
+    margin-bottom: 8px; /* Add margin to allow scrolling */
+}
+
+.top-s {
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 10px;
+    position: sticky;
+    z-index: 100;
+    top: 0px;
+    width: 100%;
+    height: 60px; /* Reduced height by 20px */
+    background: white;
+    backdrop-filter: blur(500px);
+    color: #fff;
+}
+
+/* Styles for search and filter container */
+.search-filter-container {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+#searchInput {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+#filterStatus {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Styles for report container */
+.report-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+.report-container label {
+  margin-right: 10px;
+}
+.report-container input {
+  margin-right: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.report-container button {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.report-container button:hover {
+  background-color: #45a049;
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.3);
+}
+.modal-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 32px 32px 24px 32px;
+    max-width: 700px;
+    width: 100%;
+    margin-left: 24px;
+    margin-right: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    font-family: 'Poppins', sans-serif;
+}
+.close-modal-btn {
+    margin-top: 16px;
+    background: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+}
+.close-modal-btn:hover {
+    background: #d32f2f;
+}

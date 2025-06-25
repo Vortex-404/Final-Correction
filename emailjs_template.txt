@@ -1,0 +1,9 @@
+Dear Parent/Guardian,<br><br>
+We are writing to inform you that your ward, <b>${student_name}</b>, has submitted a request for exeat from Mountain Top University for the following reason:<br><br>
+<b>Reason:</b> ${reason}<br><br>
+To proceed, please respond by clicking one of the options below:<br>
+${approve_link} | ${reject_link}<br><br>
+Your prompt response is important to ensure proper processing of your ward’s request. If you have any questions, please contact the university administration.<br><br>
+Thank you for your attention and cooperation.<br>
+Best regards,<br>
+Mountain Top University Exeat Administration

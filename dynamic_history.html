@@ -37,13 +37,21 @@
         <div class="modal-content" id="modalLetterContent"></div>
         <button id="downloadPdfBtn" class="close-modal-btn">Download PDF</button>
     </div>
+    <!-- Modal for progress tracker -->
+    <div id="progressModal" class="modal" style="display:none;">
+        <div class="modal-content" id="modalProgressContent">
+            <h2>Application Progress Tracker</h2>
+            <div id="progressSteps" style="margin-bottom: 20px;"></div>
+            <button id="closeProgressModal" class="close-modal-btn">Close</button>
+        </div>
+    </div>
     <footer>
         <!-- Footer section -->
         <p>&copy; MTU 2025. All Rights Reserved.</p>
     </footer>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
 
         // Firebase configuration for the project
         const firebaseConfig = {
@@ -60,58 +68,259 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Get the logged-in user's email from localStorage
-        const userEmail = localStorage.getItem("loggedInUserEmail");
+        // Reference to the history list and Firebase database path
         const historyList = document.getElementById("historyList");
+        const submissionsRef = ref(db, "contactForm");
 
-        function renderHistory(entries) {
-            historyList.innerHTML = "";
-            if (entries.length === 0) {
-                historyList.innerHTML = `<li style='background:#fafbfc;padding:18px 12px;border-radius:8px;color:#444;'>No history found. Submit an exeat request to see it here.</li>`;
-                return;
-            }
-            entries.forEach(entry => {
-                const li = document.createElement("li");
-                li.style.background = "#fafbfc";
-                li.style.margin = "12px 0";
-                li.style.padding = "16px 12px";
-                li.style.borderRadius = "8px";
-                li.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
-                li.innerHTML = `
-                    <div><b>Date:</b> ${entry.date || "-"}</div>
-                    <div><b>Reason:</b> ${entry.reason || "-"}</div>
-                    <div><b>Status:</b> <span class="${entry.status === 'approved' ? 'green' : entry.status === 'rejected' ? 'red' : 'gray'}">${entry.status || "pending"}</span></div>
-                    ${entry.rejectionReason ? `<div style='color:#b71c1c;'><b>Rejection Reason:</b> ${entry.rejectionReason}</div>` : ""}
-                `;
-                historyList.appendChild(li);
-            });
-        }
-
-        // Fetch and display the user's exeat history
-        function fetchHistory() {
-            if (!userEmail) {
-                renderHistory([]);
-                return;
-            }
-            const submissionsRef = ref(db, "contactForm");
+        // Get the logged-in user's email from local storage
+        let loggedInUserEmail = localStorage.getItem("loggedInUserEmail");
+        function renderHistory(emailToShow) {
+            console.log('DEBUG: Checking for user email:', emailToShow);
             onValue(submissionsRef, (snapshot) => {
-                const data = snapshot.val();
-                const entries = [];
-                for (const key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        const entry = data[key];
-                        if (entry.studentEmail && entry.studentEmail.toLowerCase() === userEmail.toLowerCase()) {
-                            entries.push(entry);
+                historyList.innerHTML = "";
+                let hasHistory = false;
+                let allEmails = [];
+                if (!snapshot.exists()) {
+                    historyList.innerHTML = "<li>No history found. Submit an exeat request to see it here.</li>";
+                    return;
+                }
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    allEmails.push(data.email);
+                    // Case-insensitive, trimmed email comparison
+                    const entryEmail = (data.email || '').trim().toLowerCase();
+                    const userEmail = (emailToShow || '').trim().toLowerCase();
+                    console.log('Comparing entryEmail:', entryEmail, 'with userEmail:', userEmail);
+                    if (entryEmail === userEmail) {
+                        hasHistory = true;
+                        const listItem = document.createElement("li");
+                        listItem.style.position = "relative";
+                        listItem.style.cursor = "pointer";
+                        listItem.innerHTML = `
+                            <strong>Request:</strong><br>
+                            Matric Number: ${data.matricNo || data.name || ''}<br>
+                            Email: ${data.email || ''}<br>
+                            Parent Email: ${data.parentEmail || ''}<br>
+                            Status: <span class="${data.status === 'Approved' ? 'green' : data.status === 'Rejected' ? 'red' : 'gray'}">
+                                ${data.status || "Pending"}
+                            </span>
+                            ${data.status === "Approved" ? `<button class="print-btn print-button" style="margin-left: 16px; vertical-align: middle;">Print</button>` : ""}
+                            ${data.status === "Rejected" ? `<button class="reason-btn" style="margin-left: 16px; vertical-align: middle; background: #ffc107; color: #000;">Why?</button>` : ""}
+                        `;
+                        // Progress tracker modal on click
+                        listItem.addEventListener('click', (e) => {
+                            if (e.target.classList.contains('print-btn') || e.target.classList.contains('reason-btn')) return;
+                            showProgressModal(data);
+                        });
+                        historyList.appendChild(listItem);
+                        if (data.status === "Approved") {
+                            const printBtn = listItem.querySelector(".print-btn");
+                            if (printBtn) {
+                                printBtn.addEventListener("click", () => showLetterModal(data));
+                            }
+                        }
+                        if (data.status === "Rejected") {
+                            const reasonButton = listItem.querySelector(".reason-btn");
+                            const dropdown = document.createElement("div");
+                            dropdown.className = "reason-dropdown";
+                            dropdown.textContent = `Reason: ${data.rejectionReason || "No reason provided."}`;
+                            dropdown.style.display = "none";
+                            listItem.appendChild(dropdown);
+                            if (reasonButton) {
+                                reasonButton.addEventListener("click", (event) => {
+                                    event.stopPropagation();
+                                    dropdown.style.display = "block";
+                                });
+                            }
+                            document.body.addEventListener("click", () => {
+                                dropdown.style.display = "none";
+                            });
                         }
                     }
+                });
+                console.log('DEBUG: All emails found in DB:', allEmails);
+                if (!hasHistory) {
+                    historyList.innerHTML = "<li>No history found. Submit an exeat request to see it here.</li>";
                 }
-                // Sort by date descending if date exists
-                entries.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-                renderHistory(entries);
             });
         }
 
-        fetchHistory();
+        if (!loggedInUserEmail) {
+            // Fallback: Prompt user to log in if no email is found
+            historyList.innerHTML = '<li>No user session found. <a href="registration.html">Please log in to view your history.</a></li>';
+        } else {
+            renderHistory(loggedInUserEmail);
+        }
+
+        // Print button now opens the modal with the formal letter
+        function showLetterModal(data) {
+            const modal = document.getElementById("letterModal");
+            const content = document.getElementById("modalLetterContent");
+            content.innerHTML = `
+                <div style="font-family: 'Poppins', sans-serif; color: #222;">
+                    <div style="text-align: right; margin-bottom: 12px;">
+                        <strong>From:</strong><br>
+                        ${data.name}<br>
+                        ${data.email}<br>
+                        Mountain Top University<br>
+                        KM 12, Lagos-Ibadan Expressway<br>
+                        Ogun State, Nigeria
+                    </div>
+                    <div style="text-align: left; margin-bottom: 12px;">
+                        <strong>To:</strong><br>
+                        The Chairman<br>
+                        Directorate of Student Affairs<br>
+                        Through:<br>
+                        The Head of Department<br>
+                        The Level Advisor
+                    </div>
+                    <div style="margin-bottom: 12px; text-align:left;">
+                        Dear Sir/Madam,<br><br>
+                        <div style="text-align:center;font-weight:bold;text-decoration:underline;">APPLICATION FOR EXEAT</div><br>
+                        I am writing to formally request an exeat for the following reason:<br>
+                        <strong>Reason:</strong> ${data.message}<br><br>
+                        I kindly request your approval for this exeat. I assure you that all necessary academic and administrative obligations have been fulfilled.<br><br>
+                        Thank you for your kind consideration.<br>
+                        Sincerely,<br><br>
+                        ${data.name}<br>
+                        ${data.email}
+                    </div>
+                </div>
+            `;
+            modal.style.display = "flex";
+        }
+
+        // Modal close logic
+        const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+        if (downloadPdfBtn) {
+            downloadPdfBtn.onclick = () => {
+                const element = document.getElementById("modalLetterContent");
+                window.html2pdf().set({
+                    margin: 0.5,
+                    filename: 'exeat_letter.pdf',
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                }).from(element).save();
+            };
+        }
+        window.onclick = function(event) {
+            const modal = document.getElementById("letterModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+
+        // Progress tracker modal
+        function showProgressModal(data) {
+            const modal = document.getElementById("letterModal");
+            const content = document.getElementById("modalLetterContent");
+            content.innerHTML = `
+                <div style="font-family: 'Poppins', sans-serif; color: #222;">
+                    <div style="font-size:20px;font-weight:700;color:#6a11cb;margin-bottom:8px;">${data.matricNo || ''}</div>
+                    <div class="status-badge approved" style="margin-bottom:16px;">${data.status || 'Pending'}</div>
+                    <div class="info-row"><span class="info-label">Student Email:</span> <span class="info-value">${data.email || ''}</span></div>
+                    <div class="info-row"><span class="info-label">Parent Email:</span> <span class="info-value">${data.parentEmail || ''}</span></div>
+                    <div class="progress-tracker" style="margin:24px 0;">
+                        ${renderProgressStepper(data.status)}
+                    </div>
+                    <div class="info-row"><span class="info-label">Letter:</span><br><pre style="background:#f4f4f9;padding:14px;border-radius:8px;font-size:15px;color:#333;">${data.letter || data.message || ''}</pre></div>
+                </div>
+            `;
+            modal.style.display = "flex";
+        }
+        // Progress stepper helper
+        function renderProgressStepper(status) {
+            const steps = [
+                { label: "Submitted", key: "submitted" },
+                { label: "Sent to Parent", key: "sent to parent" },
+                { label: "Parent Approved", key: "parent-approved" },
+                { label: "HOD Approved", key: "hod-approved" },
+                { label: "Dean Approved", key: "dean-approved" }
+            ];
+            const statusOrder = [
+                "submitted", "sent to parent", "parent-approved", "hod-approved", "dean-approved"
+            ];
+            const currentStep = statusOrder.indexOf((status || '').toLowerCase());
+            return `
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    ${steps.map((step, idx) => `
+                        <div style="flex:1;text-align:center;">
+                            <div style="
+                                width:28px;height:28px;
+                                margin:0 auto 6px auto;
+                                border-radius:50%;
+                                background:${idx <= currentStep ? '#6a11cb' : '#e0e0e0'};
+                                color:#fff;display:flex;align-items:center;justify-content:center;
+                                font-weight:600;">${idx+1}</div>
+                            <div style="font-size:13px;color:${idx <= currentStep ? '#6a11cb' : '#888'}">${step.label}</div>
+                        </div>
+                        ${idx < steps.length-1 ? `<div style="flex:0 0 24px;height:2px;background:${idx < currentStep ? '#6a11cb' : '#e0e0e0'};"></div>` : ''}
+                    `).join('')}
+                </div>
+            `;
+        }
+        // Close progress modal
+        const closeProgressModal = document.getElementById("closeProgressModal");
+        if (closeProgressModal) {
+            closeProgressModal.onclick = () => {
+                const modal = document.getElementById("progressModal");
+                modal.style.display = "none";
+            };
+        }
+
+        // Notification dropdown logic (cleaned and fixed)
+        const notificationToggle = document.getElementById("notificationToggle");
+        const notificationContent = document.getElementById("notificationContent");
+        const notificationCount = document.getElementById("notificationCount");
+        let notificationKeys = [];
+        const clearBtn = document.getElementById('clearNotificationsBtn');
+
+        if (notificationToggle && notificationContent && notificationCount && clearBtn) {
+            notificationToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                notificationContent.classList.toggle("show");
+            });
+            document.addEventListener("click", () => {
+                notificationContent.classList.remove("show");
+            });
+            onValue(submissionsRef, (snapshot) => {
+                let unreadNotifications = 0;
+                notificationContent.innerHTML = "";
+                notificationKeys = [];
+                if (!snapshot.exists()) {
+                    notificationContent.innerHTML = "<p>No new notifications</p>";
+                    notificationContent.appendChild(clearBtn);
+                    return;
+                }
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (data.email === loggedInUserEmail && data.status) {
+                        notificationKeys.push(childSnapshot.key);
+                        const notificationItem = document.createElement("div");
+                        if (data.status === "Approved") {
+                            notificationItem.textContent = "Your exeat is ready for printing.";
+                            unreadNotifications++;
+                            notificationContent.appendChild(notificationItem);
+                        } else if (data.status === "Rejected") {
+                            notificationItem.textContent = "Your exeat was rejected.";
+                            unreadNotifications++;
+                            notificationContent.appendChild(notificationItem);
+                        }
+                    }
+                });
+                if (notificationContent.innerHTML === "") {
+                    notificationContent.innerHTML = "<p>No new notifications</p>";
+                }
+                notificationContent.appendChild(clearBtn);
+                notificationCount.textContent = unreadNotifications;
+            });
+
+            clearBtn.onclick = function() {
+                notificationContent.innerHTML = "<p>No new notifications</p>";
+                notificationContent.appendChild(clearBtn);
+                notificationCount.textContent = '0';
+            };
+        }
     </script>
     <script>
         // Ensure notification access is requested immediately on login
@@ -299,6 +508,64 @@
 
         .close-modal-btn:hover {
             background: rgba(100, 207, 91);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            text-align: center;
+        }
+
+        .status-badge.approved {
+            background-color: #4caf50;
+        }
+
+        .status-badge.rejected {
+            background-color: #f44336;
+        }
+
+        .status-badge.pending {
+            background-color: #ffa726;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .info-label {
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .progress-tracker {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-step.completed {
+            color: #6a11cb;
+        }
+
+        .progress-step.pending {
+            color: #ffa726;
+        }
+
+        .progress-line {
+            flex: 0 0 24px;
+            height: 2px;
+            background: #e0e0e0;
         }
     </style>
 </body>

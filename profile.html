@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile | Mountain Top University</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #b6e388 0%, #84b000 100%);
+            min-height: 100vh;
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            min-height: 80px;
+            background: linear-gradient(90deg, #84b000 0%, #8632c7 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .Logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .Logo img {
+            border-radius: 8px;
+        }
+        .Logo p {
+            font-weight: bold;
+            font-size: 22px;
+            margin: 0;
+            color: #fff;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 10px 22px;
+            border-radius: 7px;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
+        }
+        .nav-links a.active, .nav-links a:hover {
+            background: #fff;
+            color: #388e3c;
+        }
+        .nav-links a:last-child {
+            background: #fff;
+            color: #8632c7;
+            font-weight: 600;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        .nav-links a:last-child:hover {
+            background: #388e3c;
+            color: #fff;
+            border: 2px solid #388e3c;
+        }
+        .hero {
+            width: 100vw;
+            min-height: 220px;
+            background: url('./z-images/MTU.webp') no-repeat left 40px center/110px, linear-gradient(90deg, #b6e388 0%, #84b000 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 0 0 180px;
+            margin-bottom: 0;
+        }
+        .hero-content {
+            max-width: 700px;
+        }
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #388e3c;
+            margin-bottom: 10px;
+        }
+        .hero-desc {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 0;
+        }
+        .main-layout {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 40px;
+            gap: 60px;
+            width: 100vw;
+        }
+        .profile-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44,62,80,0.12);
+            padding: 40px 32px 32px 32px;
+            width: 340px;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 2vw;
+            transition: box-shadow 0.2s;
+        }
+        .profile-card:hover {
+            box-shadow: 0 12px 40px rgba(44,62,80,0.18);
+        }
+        .profile-pic {
+            width: 130px;
+            height: 150px;
+            border-radius: 12px;
+            background: #e0e0e0;
+            margin-bottom: 22px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+        }
+        .profile-details {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .profile-info {
+            width: 100%;
+            margin-bottom: 14px;
+            font-size: 18px;
+            color: #222;
+        }
+        .profile-label {
+            color: #7b8ca7;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .profile-edit-btn {
+            background: #388e3c;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 32px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-top: 18px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        .profile-edit-btn:hover {
+            background: #256029;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+        }
+        #editProfileForm input {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .main-content {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(44,62,80,0.12);
+            padding: 48px 60px;
+            min-width: 400px;
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 480px;
+        }
+        .welcome-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+            color: #388e3c;
+        }
+        .welcome-session {
+            font-size: 19px;
+            margin-bottom: 8px;
+            text-align: center;
+            color: #222;
+        }
+        .welcome-semester {
+            font-size: 19px;
+            color: #d32f2f;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .action-btn {
+            background: #388e3c;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 13px 0;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            width: 220px;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+        }
+        .action-btn:hover {
+            background: #256029;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(44,62,80,0.13);
+        }
+        .quick-links {
+            margin-top: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+        .quick-link {
+            background: #fff;
+            color: #388e3c;
+            border: 2px solid #388e3c;
+            border-radius: 7px;
+            padding: 8px 18px;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .quick-link:hover {
+            background: #388e3c;
+            color: #fff;
+        }
+        footer {
+            margin-top: 60px;
+            background: linear-gradient(90deg, #84b000 0%, #8632c7 100%);
+            padding: 32px 0 16px 0;
+            color: #fff;
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-align: center;
+            box-shadow: 0 -2px 8px rgba(44,62,80,0.08);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 32px;
+        }
+        .footer-section {
+            flex: 1 1 200px;
+            min-width: 180px;
+        }
+        .footer-section h4 {
+            margin-bottom: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+        .footer-section ul li a {
+            color: #e6ffe6;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+        .footer-section ul li a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .footer-bottom {
+            margin-top: 24px;
+            font-size: 14px;
+            color: #e6ffe6;
+        }
+        @media (max-width: 1100px) {
+            .main-layout { flex-direction: column; align-items: center; gap: 30px; }
+            .profile-card, .main-content { width: 95vw; max-width: unset; min-width: unset; height: auto; }
+            .main-content { padding: 32px 10vw; }
+        }
+        @media (max-width: 600px) {
+            .main-layout { flex-direction: column; gap: 18px; }
+            .profile-card, .main-content { width: 98vw; padding: 18px 2vw; }
+            .main-content { padding: 18px 2vw; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="70px" height="50px">
+            <p>MOUNTAIN TOP<br>UNIVERSITY</p>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html">Apply for Exeat</a>
+            <a href="dynamic_history.html">History</a>
+            <a href="progress.html">Track Progress</a>
+        </div>
+    </nav>
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-title">Welcome to Your Student Portal</div>
+            <div class="hero-desc">Find your future at MTU, where academic excellence thrives. Here you can manage your profile, apply for exeat, track your progress, and stay connected with the MTU community.</div>
+        </div>
+    </div>
+    <div class="main-layout">
+        <div class="profile-card">
+            <img src="z-images/student.png" alt="Profile Picture" class="profile-pic" id="profilePic">
+            <div class="profile-details">
+                <div class="profile-info"><span class="profile-label">Name:</span> <span id="profileName">Loading...</span></div>
+                <div class="profile-info"><span class="profile-label">Email:</span> <span id="profileEmail">Loading...</span></div>
+                <div class="profile-info"><span class="profile-label">Matric Number:</span> <span id="profileMatric">Loading...</span></div>
+                <div class="profile-info"><span class="profile-label">Parent Email:</span> <span id="profileParentEmail">Loading...</span></div>
+                <button class="profile-edit-btn" id="editProfileBtn">Edit Profile</button>
+                <div id="editProfileForm" style="display:none;margin-top:18px;width:100%;">
+                    <input type="text" id="editName" placeholder="Name" style="margin-bottom:10px;width:100%;padding:8px;">
+                    <input type="text" id="editMatric" placeholder="Matric Number" style="margin-bottom:10px;width:100%;padding:8px;">
+                    <input type="email" id="editParentEmail" placeholder="Parent Email" style="margin-bottom:10px;width:100%;padding:8px;">
+                    <button class="profile-edit-btn" id="saveProfileBtn">Save</button>
+                    <button class="profile-edit-btn" id="cancelEditBtn" style="background:#eee;color:#333;">Cancel</button>
+                </div>
+                <div id="profileMessage" style="margin-top:12px;font-weight:600;"></div>
+            </div>
+            <div class="quick-links">
+                <a class="quick-link" href="https://mtu.edu.ng/">MTU Main Site</a>
+                <a class="quick-link" href="#">Student's Corner</a>
+                <a class="quick-link" href="#">Help Desk</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="welcome-title">Welcome <span id="welcomeName">Student</span></div>
+            <div class="welcome-session">Current Session : <span style="color:#d32f2f;font-weight:600;">2024/2025</span></div>
+            <div class="welcome-semester">Current Semester : <span style="color:#d32f2f;font-weight:600;">Second</span></div>
+            <button class="action-btn">APPLY FOR EXEAT</button>
+            <button class="action-btn">TRACK PROGRESS</button>
+            <button class="action-btn">CHECK HISTORY</button>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About MTU</h4>
+                <ul>
+                    <li><a href="https://mtu.edu.ng/">Official Website</a></li>
+                    <li><a href="#">Our Mission</a></li>
+                    <li><a href="#">Leadership</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="exeat_page.html">Apply for Exeat</a></li>
+                    <li><a href="dynamic_history.html">History</a></li>
+                    <li><a href="progress.html">Track Progress</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <ul>
+                    <li>MTU, Km 12, Lagos-Ibadan Expressway, Prayer City, Ogun State</li>
+                    <li>support@mtu.edu.ng</li>
+                    <li>+234 703 939 5024</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">&copy; MTU 2025. All Rights Reserved.</div>
+    </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+            authDomain: "exeatregister.firebaseapp.com",
+            databaseURL: "https://exeatregister-default-rtdb.firebaseio.com/",
+            projectId: "exeatregister",
+            storageBucket: "exeatregister.firebasestorage.app",
+            messagingSenderId: "572897522310",
+            appId: "1:572897522310:web:8c588bb399825e360ad707",
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        // Assume user email is stored in localStorage
+        const userEmail = localStorage.getItem('loggedInUserEmail');
+        const nameSpan = document.getElementById('profileName');
+        const emailSpan = document.getElementById('profileEmail');
+        const matricSpan = document.getElementById('profileMatric');
+        const parentEmailSpan = document.getElementById('profileParentEmail');
+        const editBtn = document.getElementById('editProfileBtn');
+        const editForm = document.getElementById('editProfileForm');
+        const saveBtn = document.getElementById('saveProfileBtn');
+        const cancelBtn = document.getElementById('cancelEditBtn');
+        const profileMessage = document.getElementById('profileMessage');
+        const welcomeName = document.getElementById('welcomeName');
+        let userKey = null;
+        function loadProfile() {
+            const submissionsRef = ref(db, 'Registration');
+            get(submissionsRef).then(snapshot => {
+                let found = false;
+                snapshot.forEach(child => {
+                    const data = child.val();
+                    if (data.email === userEmail && !found) {
+                        nameSpan.textContent = data.name || '';
+                        emailSpan.textContent = data.email || '';
+                        matricSpan.textContent = data.matricNo || '';
+                        parentEmailSpan.textContent = data.parentEmail || '';
+                        document.getElementById('editName').value = data.name || '';
+                        document.getElementById('editMatric').value = data.matricNo || '';
+                        document.getElementById('editParentEmail').value = data.parentEmail || '';
+                        welcomeName.textContent = data.name || 'Student';
+                        userKey = child.key;
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    nameSpan.textContent = 'Not found';
+                    emailSpan.textContent = userEmail || 'Not found';
+                    matricSpan.textContent = 'Not found';
+                    parentEmailSpan.textContent = 'Not found';
+                    welcomeName.textContent = 'Student';
+                }
+            });
+        }
+        loadProfile();
+        editBtn.onclick = () => {
+            editForm.style.display = 'block';
+            editBtn.style.display = 'none';
+        };
+        cancelBtn.onclick = () => {
+            editForm.style.display = 'none';
+            editBtn.style.display = 'inline-block';
+            profileMessage.textContent = '';
+        };
+        saveBtn.onclick = async () => {
+            if (!userKey) return;
+            const newName = document.getElementById('editName').value.trim();
+            const newMatric = document.getElementById('editMatric').value.trim();
+            const newParentEmail = document.getElementById('editParentEmail').value.trim();
+            const userRef = ref(db, `Registration/${userKey}`);
+            await update(userRef, { name: newName, matricNo: newMatric, parentEmail: newParentEmail });
+            profileMessage.textContent = 'Profile updated!';
+            editForm.style.display = 'none';
+            editBtn.style.display = 'inline-block';
+            loadProfile();
+        };
+    </script>
+</body>
+</html>

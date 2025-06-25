@@ -21,7 +21,7 @@ const db = getDatabase(app);
 
 // Initialize EmailJS (call this once, e.g. after your imports)
 if (window.emailjs) {
-    window.emailjs.init('user_123456789'); // Replace with your EmailJS user ID
+    window.emailjs.init('g7tceHPlJ69ldxZZ1'); // Provided EmailJS user ID
 } else {
     console.error('EmailJS library not loaded!');
 }
@@ -104,25 +104,31 @@ onValue(submissionsRef, (snapshot) => {
             // Update status in database
             const submissionRef = ref(db, `contactForm/${id}`);
             await update(submissionRef, { status: "Sent to Parent" });
-            // EmailJS integration (replace with your actual EmailJS params)
+            // EmailJS integration (using provided params)
             try {
                 if (!window.emailjs) throw new Error('EmailJS not loaded');
-                const serviceID = 'your_service_id';
-                const templateID = 'your_template_id';
-                const userID = 'your_user_id';
+                const serviceID = 'service_pnam5bu';
+                const templateID = 'template_u63d3nc';
+                const userID = 'g7tceHPlJ69ldxZZ1';
+                // Generate approval and reject links using the request ID
+                const approveLink = `http://127.0.0.1:5500/parent_approval.html?requestId=${id}&action=approve`;
+                const rejectLink = `http://127.0.0.1:5500/parent_approval.html?requestId=${id}&action=reject`;
                 const templateParams = {
                     to_email: parentEmail,
-                    student_name: data.name || '',
-                    student_email: data.email || '',
-                    reason: data.message || '',
-                    matric_no: data.matricNo || ''
+                    student_name: data.name && data.name.trim() ? data.name : 'Unknown Student',
+                    student_email: data.email || 'N/A',
+                    reason: data.message || 'N/A',
+                    matric_no: data.matricNo || 'N/A',
+                    approve_link: approveLink,
+                    reject_link: rejectLink
                 };
+                console.log('EmailJS templateParams:', templateParams);
                 const response = await window.emailjs.send(serviceID, templateID, templateParams, userID);
                 console.log('EmailJS response:', response);
                 alert('Email sent to parent successfully!');
             } catch (err) {
                 console.error('Error sending email:', err);
-                alert('Error sending email: ' + (err.message || err));
+                alert('Error sending email: ' + (err.text || err.message || JSON.stringify(err)));
             }
         });
     });

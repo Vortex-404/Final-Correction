@@ -1,0 +1,227 @@
+/* General reset and font settings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Body styling for centering content */
+body {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Top section and navigation bar styling */
+.top-s,
+nav {
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 10px;
+    position: sticky;
+    z-index: 100;
+    top: 0px;
+    width: 100%;
+    background: white;
+    backdrop-filter: blur(500px);
+    color: #fff;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 84px;
+    background: linear-gradient(45deg, rgb(100, 207, 91), rgba(134, 50, 199, 0.74));
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(500px);
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Logo styling */
+.Logo {
+    font-weight: 600;
+    font-size: 19px;
+    color: #fff;
+    display: flex;
+    margin: right 8px;
+}
+
+/* History container styling */
+.history-container {
+    margin-top: 50px;
+    text-align: center;
+}
+
+/* Button for printing history */
+#printHistoryButton {
+    position: relative;
+    top: 0;
+    right: 10px; /* Adjust as needed for spacing */
+}
+
+/* Styling for the history list */
+.history-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px auto;
+    width: 80%;
+    text-align: left;
+}
+
+.history-list li {
+    background-color: #f9f9f9;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation links styling */
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.nav-links a.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+/* Button styling */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: rgb(100, 207, 91);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: rgba(134, 50, 199, 0.74);
+}
+
+button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+/* Status color indicators */
+.green {
+    color: green;
+    font-weight: bold;
+}
+
+.red {
+    color: red;
+    font-weight: bold;
+}
+
+.gray {
+    color: gray;
+    font-weight: bold;
+}
+
+/* Footer styling */
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #bebbbba8;
+    color: #000;
+    font-size: 14px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    padding-top: 7px;
+    backdrop-filter: blur(500px);
+    z-index: 10;
+    margin: 0;
+}
+
+/* Notification dropdown styling */
+.notification-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background-color: #fff;
+    width: 340px;
+    min-height: 60px;
+    max-height: 320px;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    border-radius: 10px;
+    padding: 10px 0 10px 0;
+    z-index: 1000;
+    color: #222;
+    font-size: 15px;
+}
+
+.notification-content div {
+    padding: 10px 18px;
+    border-bottom: 1px solid #eee;
+    word-break: break-word;
+}
+
+.notification-content div:last-child {
+    border-bottom: none;
+}
+
+.notification-content p {
+    margin: 0;
+    padding: 10px 18px;
+    color: #888;
+    text-align: center;
+}
+
+.notification-content.show {
+    display: block;
+}
+
+.cancel-notification {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 10px auto 0 auto;
+    display: block;
+    width: 90%;
+}
+
+.cancel-notification:hover {
+    background-color: #d32f2f;
+}

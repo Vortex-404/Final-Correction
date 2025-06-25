@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script type="module" src="admin.js" defer></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+</head>
+<body>
+<!-- Top section with the page title -->
+    <div class="top-s">Admin Dashboard</div>
+    <nav>
+        <!-- Logo section -->
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="93px" height="64px">
+            <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
+        </div>
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html">Apply for Exeat</a>
+            <a href="dynamic_history.html">History</a>
+            <a href="progress.html">Track Progress</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </nav>
+    <div class="admin-container">
+        <!-- Section to manage submissions -->
+        <h1>Manage Submissions</h1>
+        <div class="search-filter-container">
+            <input type="text" id="searchInput" placeholder="Search by Matric Number or Email" />
+            <select id="filterStatus">
+                <option value="">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+        <h2>Pending/Active Requests</h2>
+        <table id="submissionsTable">
+            <thead>
+                <!-- Table headers -->
+                <tr>
+                    <th>Matric Number</th>
+                    <th>Email</th>
+                    <th>Letter</th>
+                    <th>Status</th>
+                    <th>Parent Email</th>
+                    <th>Send to Parent</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Submissions will be dynamically inserted here -->
+                <!-- Each row will have: Matric Number, Email, Letter, Status, Parent Email (read-only), Send to Parent button -->
+            </tbody>
+        </table>
+        <h2>Approved Requests</h2>
+        <table id="approvedTable">
+            <thead>
+                <tr>
+                    <th>Matric Number</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Parent Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Approved requests will be dynamically inserted here -->
+            </tbody>
+        </table>
+        <h2>Rejected Requests</h2>
+        <table id="rejectedTable">
+            <thead>
+                <tr>
+                    <th>Matric Number</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Parent Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rejected requests will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal for viewing letter -->
+    <div id="letterModal" class="modal" style="display:none;">
+        <div class="modal-content" id="modalLetterContent"></div>
+        <button id="downloadPdfBtn" class="close-modal-btn">Download PDF</button>
+    </div>
+    <!-- Custom modal for rejection reason -->
+    <!-- Rejection modal removed: Admin no longer rejects requests -->
+    <footer>
+        <!-- Footer section -->
+        <p>&copy; MTU 2025. All Rights Reserved.</p>
+    </footer>
+    <script type="module">
+        // Download PDF logic remains
+        const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+        if (downloadPdfBtn) {
+            downloadPdfBtn.onclick = () => {
+                const element = document.getElementById("modalLetterContent");
+                html2pdf().set({
+                    margin: 0.5,
+                    filename: 'exeat_letter.pdf',
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                }).from(element).save();
+            };
+        }
+    </script>
+    <script type="text/javascript">
+      (function(){
+        emailjs.init({
+          publicKey: "g7tceHPlJ69ldxZZ1"
+        });
+      })();
+    </script>
+</body>
+</html>

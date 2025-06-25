@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOD Exeat Approval</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        .hod-approval-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .hod-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 14px;
+            background: #fff;
+            box-shadow: 0 4px 24px rgba(100, 207, 91, 0.08), 0 1.5px 8px #e0e0e0;
+            margin-bottom: 36px;
+            padding: 32px 28px 24px 28px;
+            transition: box-shadow 0.2s;
+        }
+        .hod-card:hover {
+            box-shadow: 0 8px 32px rgba(134, 50, 199, 0.12), 0 2px 12px #e0e0e0;
+        }
+        .hod-card .matric {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6a11cb;
+            margin-bottom: 8px;
+        }
+        .hod-card .status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: #f3f3f3;
+            color: #6a11cb;
+        }
+        .hod-card .status-badge.approved { background: #e6fbe6; color: #4caf50; }
+        .hod-card .status-badge.rejected { background: #ffeaea; color: #d32f2f; }
+        .hod-card .status-badge.pending { background: #f3f3f3; color: #6a11cb; }
+        .hod-card .info-row { margin-bottom: 10px; }
+        .hod-card .info-label { font-weight: 600; color: #333; }
+        .hod-card .info-value { color: #444; }
+        .hod-card pre {
+            background: #f8f8f8;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin: 0 0 12px 0;
+        }
+        .hod-card textarea {
+            width: 100%;
+            margin: 12px 0 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            resize: vertical;
+        }
+        .hod-card .action-row {
+            display: flex;
+            gap: 16px;
+            margin-top: 10px;
+        }
+        .hod-card button {
+            padding: 10px 28px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .hod-card .approve-btn {
+            background: linear-gradient(90deg, #64cf5b 60%, #6a11cb 100%);
+            color: #fff;
+        }
+        .hod-card .approve-btn:hover {
+            background: linear-gradient(90deg, #6a11cb 0%, #64cf5b 100%);
+        }
+        .hod-card .reject-btn {
+            background: #d32f2f;
+            color: #fff;
+        }
+        .hod-card .reject-btn:hover {
+            background: #b71c1c;
+        }
+        .timeline {
+            margin: 18px 0 0 0;
+            padding: 0;
+            list-style: none;
+        }
+        .timeline li {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        .timeline .active {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+        }
+        .close-modal-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            margin-top: -10px;
+        }
+        .close-modal-btn:hover {
+            background-color: #5a6268;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 32px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-s">HOD Exeat Approval</div>
+    <nav>
+        <!-- Logo section -->
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="93px" height="64px">
+            <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
+        </div>
+        <!-- Navigation links -->
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html">Apply for Exeat</a>
+            <a href="dynamic_history.html">History</a>
+            <a href="progress.html">Track Progress</a>
+            <a href="profile.html">Profile</a>
+        </div>
+    </nav>
+    <div class="admin-container" style="max-width:800px;margin:40px auto;">
+        <div class="hod-approval-header">
+            <h1 style="color:#6a11cb;">HOD Exeat Approval</h1>
+            <p style="color:#555;font-size:17px;">Review and process all exeat requests. Tap a request to view details and take action.</p>
+        </div>
+        <table id="hodRequestsTable" style="width:100%;margin-bottom:32px;">
+            <thead>
+                <tr>
+                    <th>Matric Number</th>
+                    <th>Student Email</th>
+                    <th>Status</th>
+                    <th>Parent Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="hodRequestModal" class="modal" style="display:none;">
+            <div class="modal-content" id="hodModalContent"></div>
+            <button id="closeHodModalBtn" class="close-modal-btn">Close</button>
+        </div>
+        <div id="hodMessage" style="margin-top:24px;font-weight:600;"></div>
+        <h2>HOD Approved Requests</h2>
+        <table id="hodApprovedTable">
+            <thead>
+                <tr>
+                    <th>Matric Number</th>
+                    <th>Student Email</th>
+                    <th>Status</th>
+                    <th>Parent Email</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h2>HOD Rejected Requests</h2>
+        <table id="hodRejectedTable">
+            <thead>
+                <tr>
+                    <th>Matric Number</th>
+                    <th>Student Email</th>
+                    <th>Status</th>
+                    <th>Parent Email</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <footer>
+        <p>&copy; MTU 2025. All Rights Reserved.</p>
+    </footer>
+    <script type="module">
+        // HOD login check
+        if (!localStorage.getItem('hodLoggedIn')) {
+            window.location.href = 'login.html';
+        }
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+            authDomain: "exeatregister.firebaseapp.com",
+            databaseURL: "https://exeatregister-default-rtdb.firebaseio.com/",
+            projectId: "exeatregister",
+            storageBucket: "exeatregister.firebasestorage.app",
+            messagingSenderId: "572897522310",
+            appId: "1:572897522310:web:8c588bb399825e360ad707",
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const hodRequestsTable = document.getElementById('hodRequestsTable').querySelector('tbody');
+        const hodApprovedTable = document.getElementById('hodApprovedTable').querySelector('tbody');
+        const hodRejectedTable = document.getElementById('hodRejectedTable').querySelector('tbody');
+        const hodRequestModal = document.getElementById('hodRequestModal');
+        const hodModalContent = document.getElementById('hodModalContent');
+        const closeHodModalBtn = document.getElementById('closeHodModalBtn');
+        const hodMessageDiv = document.getElementById('hodMessage');
+
+        // Fetch and display only parent-approved requests for HOD action
+        const submissionsRef = ref(db, 'contactForm');
+        onValue(submissionsRef, (snapshot) => {
+            hodRequestsTable.innerHTML = '';
+            hodApprovedTable.innerHTML = '';
+            hodRejectedTable.innerHTML = '';
+            let found = false, foundApproved = false, foundRejected = false;
+            snapshot.forEach(child => {
+                const data = child.val();
+                const status = (data.status||'').toLowerCase();
+                if (status === 'parent-approved') {
+                    found = true;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.matricNo || ''}</td>
+                        <td>${data.studentEmail || data.email || ''}</td>
+                        <td><span class="status-badge approved">Parent Approved</span></td>
+                        <td>${data.parentEmail || ''}</td>
+                        <td><button class="view-hod-btn" data-id="${child.key}">View</button></td>
+                    `;
+                    hodRequestsTable.appendChild(row);
+                } else if (status === 'hod-approved') {
+                    foundApproved = true;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.matricNo || ''}</td>
+                        <td>${data.studentEmail || data.email || ''}</td>
+                        <td><span class="status-badge approved">HOD Approved</span></td>
+                        <td>${data.parentEmail || ''}</td>
+                    `;
+                    hodApprovedTable.appendChild(row);
+                } else if (status === 'hod-rejected') {
+                    foundRejected = true;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.matricNo || ''}</td>
+                        <td>${data.studentEmail || data.email || ''}</td>
+                        <td><span class="status-badge rejected">HOD Rejected</span></td>
+                        <td>${data.parentEmail || ''}</td>
+                    `;
+                    hodRejectedTable.appendChild(row);
+                }
+            });
+            if (!found) {
+                hodRequestsTable.innerHTML = '<tr><td colspan="5" style="color:#888;text-align:center;">No parent-approved exeat requests available.</td></tr>';
+            }
+            if (!foundApproved) {
+                hodApprovedTable.innerHTML = '<tr><td colspan="4" style="color:#888;text-align:center;">No HOD approved requests yet.</td></tr>';
+            }
+            if (!foundRejected) {
+                hodRejectedTable.innerHTML = '<tr><td colspan="4" style="color:#888;text-align:center;">No HOD rejected requests yet.</td></tr>';
+            }
+            document.querySelectorAll('.view-hod-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const id = btn.dataset.id;
+                    const data = snapshot.child(id).val();
+                    hodModalContent.innerHTML = `
+                        <div style="font-size:22px;font-weight:700;color:#6a11cb;margin-bottom:8px;">${data.matricNo || ''}</div>
+                        <div class="status-badge approved" style="margin-bottom:16px;">${data.status || 'Parent Approved'}</div>
+                        <div class="info-row"><span class="info-label">Student Email:</span> <span class="info-value">${data.studentEmail || data.email || ''}</span></div>
+                        <div class="info-row"><span class="info-label">Parent Email:</span> <span class="info-value">${data.parentEmail || ''}</span></div>
+                        <div class="info-row"><span class="info-label">Reason:</span> <span class="info-value">${data.message || ''}</span></div>
+                        <div class="info-row"><span class="info-label">Letter:</span><br><pre style="background:#f4f4f9;padding:14px;border-radius:8px;font-size:15px;color:#333;">${data.letter || data.message || ''}</pre></div>
+                        <textarea class="hod-remark" placeholder="Enter your remark (required)" style="margin-top:12px;margin-bottom:16px;padding:12px;font-size:16px;border-radius:8px;border:1px solid #b6e0a6;width:100%;resize:vertical;"></textarea>
+                        <div class="action-row" style="justify-content:center;margin-top:18px;">
+                            <button class="approve-btn" data-id="${id}" style="margin-right:12px;">Sign & Recommend</button>
+                            <button class="reject-btn" data-id="${id}">Reject</button>
+                        </div>
+                    `;
+                    hodRequestModal.style.display = 'flex';
+                    // Approve/Reject logic
+                    hodModalContent.querySelector('.approve-btn').onclick = async () => {
+                        const remark = hodModalContent.querySelector('.hod-remark').value.trim();
+                        if (!remark) { alert('Please enter a remark.'); return; }
+                        const reqRef = ref(db, `contactForm/${id}`);
+                        await update(reqRef, { status: "hod-approved", hodRemark: remark });
+                        hodModalContent.innerHTML += '<div style="color:green;margin-top:12px;">Request signed and sent to Dean!</div>';
+                        hodRequestModal.style.display = 'none';
+                    };
+                    hodModalContent.querySelector('.reject-btn').onclick = async () => {
+                        const remark = hodModalContent.querySelector('.hod-remark').value.trim();
+                        if (!remark) { alert('Please enter a remark.'); return; }
+                        const reqRef = ref(db, `contactForm/${id}`);
+                        await update(reqRef, { status: "hod-rejected", hodRemark: remark });
+                        hodModalContent.innerHTML += '<div style="color:red;margin-top:12px;">Request rejected.</div>';
+                        hodRequestModal.style.display = 'none';
+                    };
+                };
+            });
+        });
+        closeHodModalBtn.onclick = () => {
+            hodRequestModal.style.display = 'none';
+        };
+        window.onclick = function(event) {
+            if (event.target === hodRequestModal) {
+                hodRequestModal.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

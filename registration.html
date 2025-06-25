@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- This page provides the interface for user registration and login -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="registration.css">
+    <script type="module" src="register.js" defer></script>
+    <script type="module" src="login.js" defer></script>
+    <title>Home Page</title>
+    <style>
+        .cancel-notification {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .cancel-notification:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <!-- Wrapper for the registration and login forms -->
+    <div class="wrapper">
+        <nav class="nav">
+            <!-- Logo section -->
+            <div class="nav-logo">
+                <p>MTU</p>
+            </div>
+            <!-- Buttons to toggle between login and registration -->
+            <div class="nav-button">
+                <button class="btn white-btn" id="loginBtn" onclick="login()">Login</button>
+                <button class="btn" id="registerBtn" onclick="register()">Sign Up</button>
+            </div>
+
+        </nav>
+        <!-- Login form container -->
+        <div class="form-box">
+            <div class="login-container" id="login">
+                <div class="top">
+                    <span>Don't have an account? <a href="#" id="registerLink" onclick="register()">Sign Up</a></span>
+                    <header>Login</header>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="input-field" placeholder="Email" id="login_email">
+                    <i class="bx bx-user"></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" class="input-field" placeholder="Password" id="login_password">
+                    <i class="bx bx-lock-alt"></i>
+                </div>
+                <div class="input-box">
+                    <button type="submit" class="submit" value="Sign In" id="Login">Login</button>
+                </div>
+                <div class="two-col">
+                    <div class="one">
+                        <input type="checkbox" id="login-check">
+                        <label for="login-check"> Remember Me</label>
+                    </div>
+                    <div class="two">
+                        <label><a href="#" id="resetPassword">Forgot password?</a></label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration form container -->
+            <div class="register-container" id="register">
+                <div class="top">
+                    <span>Have an account? <a href="#" id="loginLink" onclick="login()">Login</a></span>
+                    <header>Sign Up</header>
+                </div>
+                <div class="two-forms">
+                    <div class="input-box">
+                        <input type="text" class="input-field" placeholder="Firstname" id="first_name">
+                        <i class="bx bx-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" class="input-field" placeholder="Lastname" id="last_name">
+                        <i class="bx bx-user"></i>
+                    </div>
+                </div>
+                <div class="input-box">
+                    <input type="text" class="input-field" placeholder="Email" id="register_email">
+                    <i class="bx bx-envelope"></i>
+                </div>
+                <div class="input-box">
+                    <input type="password" class="input-field" placeholder="Password" id="register_password">
+                    <i class="bx bx-lock-alt"></i>
+                </div>
+                <div class="input-box">
+                    <input type="email" class="input-field" placeholder="Parent Email" id="parent_email">
+                    <i class="bx bx-envelope"></i>
+                </div>
+                <div class="input-box">
+                    <button type="submit" class="submit" value="Register" id="submit">Sign Up</button>
+                </div>
+                <div class="two-col">
+                    <div class="one">
+                        <input type="checkbox" id="register-check">
+                        <label for="register-check"> Remember Me</label>
+                    </div>
+                    <div class="two">
+                        <label><a href="#">Terms & conditions</a></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // JavaScript to toggle between login and registration forms
+            const loginBtn = document.getElementById("loginBtn");
+            const registerBtn = document.getElementById("registerBtn");
+            const navMenu = document.getElementById("navMenu");
+            const loginLink = document.getElementById("loginLink");
+            const registerLink = document.getElementById("registerLink");
+            const loginContainer = document.getElementById("login");
+            const registerContainer = document.getElementById("register");
+            const notificationToggle = document.getElementById("notificationToggle");
+            const cancelNotification = document.getElementById("cancelNotification");
+
+            loginBtn.addEventListener("click", login);
+            registerBtn.addEventListener("click", register);
+            navMenu.addEventListener("click", myMenuFunction);
+            loginLink.addEventListener("click", login);
+            registerLink.addEventListener("click", register);
+            notificationToggle.addEventListener("click", () => {
+                const notificationContent = document.getElementById("notificationContent");
+                notificationContent.style.display = notificationContent.style.display === "block" ? "none" : "block";
+            });
+            cancelNotification.addEventListener("click", () => {
+                notificationContent.style.display = "none";
+            });
+
+            function myMenuFunction() {
+                // Toggle menu for mobile view
+                if (navMenu.className === "nav-menu") {
+                    navMenu.className += " responsive";
+                } else {
+                    navMenu.className = "nav-menu";
+                }
+            }
+
+            function login() {
+                // Show login form and hide registration form
+                loginContainer.style.left = "4px";
+                registerContainer.style.right = "-520px";
+                loginBtn.className += " white-btn";
+                registerBtn.className = "btn";
+                loginContainer.style.opacity = 1;
+                registerContainer.style.opacity = 0;
+            }
+
+            function register() {
+                // Show registration form and hide login form
+                loginContainer.style.left = "-510px";
+                registerContainer.style.right = "5px";
+                loginBtn.className = "btn";
+                registerBtn.className += " white-btn";
+                loginContainer.style.opacity = 0;
+                registerContainer.style.opacity = 1;
+            }
+        });
+    </script>
+</body>
+</html>
