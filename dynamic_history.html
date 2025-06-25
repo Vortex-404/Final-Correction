@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- This page displays the history of exeat requests for logged-in students -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Page</title>
+    <link rel="stylesheet" href="dynamic_history.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+        <!-- Top section with the page title -->
+    <div class="top-s">History</div>
+    <nav>
+        <!-- Logo section -->
+        <div class="Logo">
+            <img src="./z-images/MTU.webp" width="93px" height="64px">
+            <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
+        </div>
+        <!-- Navigation links -->
+        <div class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="exeat_page.html">Apply for Exeat</a>
+            <a href="dynamic_history.html" class="active">History</a>
+            <a href="progress.html">Track Progress</a>
+        </div>
+    </nav>
+    <div class="history-container" style="padding-bottom: 100px;">
+        <!-- Section to display the user's activity history -->
+        <h1>Your Activity History</h1>
+        <ul class="history-list" id="historyList" style="padding-bottom: 80px;">
+            <!-- History items will be dynamically inserted here -->
+        </ul>
+    </div>
+    <!-- Modal for viewing letter -->
+    <div id="letterModal" class="modal" style="display:none;">
+        <div class="modal-content" id="modalLetterContent"></div>
+        <button id="downloadPdfBtn" class="close-modal-btn">Download PDF</button>
+    </div>
+    <footer>
+        <!-- Footer section -->
+        <p>&copy; MTU 2025. All Rights Reserved.</p>
+    </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+        // Firebase configuration for the project
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVTheN4w8M0blhuMY07AfDOri8Sb3-hzI",
+            authDomain: "exeatregister.firebaseapp.com",
+            databaseURL: "https://exeatregister-default-rtdb.firebaseio.com",
+            projectId: "exeatregister",
+            storageBucket: "exeatregister.firebasestorage.app",
+            messagingSenderId: "572897522310",
+            appId: "1:572897522310:web:8c588bb399825e360ad707",
+        };
+
+        // Initialize Firebase app and database
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Get the logged-in user's email from localStorage
+        const userEmail = localStorage.getItem("loggedInUserEmail");
+        const historyList = document.getElementById("historyList");
+
+        function renderHistory(entries) {
+            historyList.innerHTML = "";
+            if (entries.length === 0) {
+                historyList.innerHTML = `<li style='background:#fafbfc;padding:18px 12px;border-radius:8px;color:#444;'>No history found. Submit an exeat request to see it here.</li>`;
+                return;
+            }
+            entries.forEach(entry => {
+                const li = document.createElement("li");
+                li.style.background = "#fafbfc";
+                li.style.margin = "12px 0";
+                li.style.padding = "16px 12px";
+                li.style.borderRadius = "8px";
+                li.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
+                li.innerHTML = `
+                    <div><b>Date:</b> ${entry.date || "-"}</div>
+                    <div><b>Reason:</b> ${entry.reason || "-"}</div>
+                    <div><b>Status:</b> <span class="${entry.status === 'approved' ? 'green' : entry.status === 'rejected' ? 'red' : 'gray'}">${entry.status || "pending"}</span></div>
+                    ${entry.rejectionReason ? `<div style='color:#b71c1c;'><b>Rejection Reason:</b> ${entry.rejectionReason}</div>` : ""}
+                `;
+                historyList.appendChild(li);
+            });
+        }
+
+        // Fetch and display the user's exeat history
+        function fetchHistory() {
+            if (!userEmail) {
+                renderHistory([]);
+                return;
+            }
+            const submissionsRef = ref(db, "contactForm");
+            onValue(submissionsRef, (snapshot) => {
+                const data = snapshot.val();
+                const entries = [];
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const entry = data[key];
+                        if (entry.studentEmail && entry.studentEmail.toLowerCase() === userEmail.toLowerCase()) {
+                            entries.push(entry);
+                        }
+                    }
+                }
+                // Sort by date descending if date exists
+                entries.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+                renderHistory(entries);
+            });
+        }
+
+        fetchHistory();
+    </script>
+    <script>
+        // Ensure notification access is requested immediately on login
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission().then((permission) => {
+                if (permission !== "granted") {
+                    alert("Notification access is required to proceed.");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        .reason-dropdown {
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .reason-btn {
+            display: inline-block;
+            position: static !important;
+            margin-left: 16px;
+            background: #ffc107;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 18px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reason-btn:hover {
+            background: #e0a800;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 0;
+        }
+
+        .notification-toggle {
+            background-color: #4caf4f00;
+            color: white;
+            padding: 6px 10px;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            min-width: unset;
+            height: 36px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background-color: #fff;
+            width: 380px;
+            min-height: 80px;
+            max-height: 350px;
+            overflow-y: auto;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            border-radius: 10px;
+            padding: 18px 18px 10px 18px;
+            z-index: 1000;
+            color: #222;
+        }
+
+        .notification-content p {
+            margin: 0;
+            padding: 18px 0 8px 0;
+            color: #888;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .notification-content p:last-child {
+            border-bottom: none;
+        }
+
+        .notification-content.show {
+            display: block;
+        }
+
+        .clear-notifications-btn {
+            background: #f44336;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 12px 0;
+            margin: 12px 18px 10px 18px;
+            width: calc(100% - 36px);
+            box-shadow: 0 2px 8px rgba(244,67,54,0.08);
+            transition: background 0.2s;
+            display: block;
+        }
+
+        .clear-notifications-btn:hover {
+            background: #d32f2f;
+        }
+
+        .print-btn.print-button {
+            display: inline-block;
+            position: static !important;
+            margin-left: 16px;
+            background: #60c258;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 18px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .print-btn.print-button:hover {
+            background: #4da048;
+        }
+
+        .history-list {
+            padding-bottom: 80px !important;
+        }
+
+        .history-container {
+            padding-bottom: 100px;
+        }
+
+        .modal {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 10px;
+            padding: 32px 32px 24px 32px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .close-modal-btn {
+            margin-top: 16px;
+            background: rgba(100, 207, 91);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(100, 207, 91);
+        }
+    </style>
+</body>
+</html>
