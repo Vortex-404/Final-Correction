@@ -35,16 +35,15 @@
             </div>
             <!-- Buttons to toggle between login and registration -->
             <div class="nav-button">
-                <button class="btn white-btn" id="loginBtn" onclick="login()">Login</button>
-                <button class="btn" id="registerBtn" onclick="register()">Sign Up</button>
+                <button class="btn white-btn" id="loginBtn" type="button">Login</button>
+                <button class="btn" id="registerBtn" type="button">Sign Up</button>
             </div>
-
         </nav>
         <!-- Login form container -->
         <div class="form-box">
             <div class="login-container" id="login">
                 <div class="top">
-                    <span>Don't have an account? <a href="#" id="registerLink" onclick="register()">Sign Up</a></span>
+                    <span>Don't have an account? <a href="#" id="registerLink">Sign Up</a></span>
                     <header>Login</header>
                 </div>
                 <div class="input-box">
@@ -56,7 +55,7 @@
                     <i class="bx bx-lock-alt"></i>
                 </div>
                 <div class="input-box">
-                    <button type="submit" class="submit" value="Sign In" id="Login">Login</button>
+                    <button type="button" class="submit" id="Login">Login</button>
                 </div>
                 <div class="two-col">
                     <div class="one">
@@ -68,11 +67,10 @@
                     </div>
                 </div>
             </div>
-
             <!-- Registration form container -->
             <div class="register-container" id="register">
                 <div class="top">
-                    <span>Have an account? <a href="#" id="loginLink" onclick="login()">Login</a></span>
+                    <span>Have an account? <a href="#" id="loginLink">Login</a></span>
                     <header>Sign Up</header>
                 </div>
                 <div class="two-forms">
@@ -98,7 +96,7 @@
                     <i class="bx bx-envelope"></i>
                 </div>
                 <div class="input-box">
-                    <button type="submit" class="submit" value="Register" id="submit">Sign Up</button>
+                    <button type="button" class="submit" id="submit">Sign Up</button>
                 </div>
                 <div class="two-col">
                     <div class="one">

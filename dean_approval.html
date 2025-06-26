@@ -77,11 +77,11 @@
             transition: background 0.2s;
         }
         .hod-card .approve-btn {
-            background: linear-gradient(90deg, #64cf5b 60%, #6a11cb 100%);
+            background: #64cf5b 60%;
             color: #fff;
         }
         .hod-card .approve-btn:hover {
-            background: linear-gradient(90deg, #6a11cb 0%, #64cf5b 100%);
+            background: #64cf5b 100%;
         }
         .hod-card .reject-btn {
             background: #d32f2f;
@@ -112,7 +112,7 @@
             width: 90%;
             max-width: 600px;
             border-radius: 8px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0)
         }
         .close-modal-btn {
             background-color: #6c757d;
@@ -127,6 +127,23 @@
         .close-modal-btn:hover {
             background-color: #5a6268;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 32px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
@@ -137,13 +154,6 @@
             <img src="./z-images/MTU.webp" width="93px" height="64px">
             <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
         </div>
-        <div class="nav-links">
-            <a href="home.html">Home</a>
-            <a href="exeat_page.html">Apply for Exeat</a>
-            <a href="dynamic_history.html">History</a>
-            <a href="progress.html">Track Progress</a>
-            <a href="profile.html">Profile</a>
-        </div>
     </nav>
     <div class="admin-container" style="max-width:800px;margin:40px auto;">
         <div class="dean-approval-header">
@@ -153,6 +163,18 @@
         <h1>Review Exeat Requests</h1>
         <div id="requestsList"></div>
         <div id="deanMessage" style="margin-top:24px;font-weight:600;"></div>
+        <h2 style="margin-top:40px;color:#6a11cb;">Dean Approval History</h2>
+        <table id="deanHistoryTable" style="width:100%;margin-bottom:32px;">
+            <thead>
+                <tr>
+                    <th>Matric Number</th>
+                    <th>Status</th>
+                    <th>Remark</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
     <footer>
         <p>&copy; MTU 2025. All Rights Reserved.</p>
@@ -179,6 +201,7 @@
         const db = getDatabase(app);
         const requestsListDiv = document.getElementById('requestsList');
         const deanMessageDiv = document.getElementById('deanMessage');
+        const deanHistoryTableBody = document.getElementById('deanHistoryTable').querySelector('tbody');
 
         // Modal for approval/rejection
         let modal = null;
@@ -196,9 +219,12 @@
         const submissionsRef = ref(db, 'contactForm');
         onValue(submissionsRef, (snapshot) => {
             requestsListDiv.innerHTML = '';
+            deanHistoryTableBody.innerHTML = '';
             let found = false;
+            let foundHistory = false;
             snapshot.forEach(child => {
                 const data = child.val();
+                // Dean approval queue
                 if ((data.status||'').toLowerCase() === 'hod-approved') {
                     found = true;
                     const reqDiv = document.createElement('div');
@@ -242,6 +268,16 @@
                         }
                         reqDiv.querySelector('.approve-btn').style.display = 'none';
                         reqDiv.querySelector('.reject-btn').style.display = 'none';
+
+                        // Add to Dean Approval History
+                        const historyRow = document.createElement('tr');
+                        historyRow.innerHTML = `
+                            <td>${data.matricNo || ''}</td>
+                            <td>Approved</td>
+                            <td>${remark}</td>
+                            <td>${new Date().toLocaleString()}</td>
+                        `;
+                        deanHistoryTableBody.appendChild(historyRow);
                     };
                     // Reject
                     reqDiv.querySelector('.reject-btn').onclick = async () => {
@@ -268,11 +304,36 @@
                         }
                         reqDiv.querySelector('.approve-btn').style.display = 'none';
                         reqDiv.querySelector('.reject-btn').style.display = 'none';
+
+                        // Add to Dean Approval History
+                        const historyRow = document.createElement('tr');
+                        historyRow.innerHTML = `
+                            <td>${data.matricNo || ''}</td>
+                            <td>Rejected</td>
+                            <td>${remark}</td>
+                            <td>${new Date().toLocaleString()}</td>
+                        `;
+                        deanHistoryTableBody.appendChild(historyRow);
                     };
+                }
+                // Dean history
+                if ((data.status||'').toLowerCase() === 'dean-approved' || (data.status||'').toLowerCase() === 'dean-rejected') {
+                    foundHistory = true;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.matricNo || ''}</td>
+                        <td><span class="status-badge ${data.status === 'dean-approved' ? 'approved' : 'rejected'}">${data.status}</span></td>
+                        <td>${data.deanRemark || ''}</td>
+                        <td>${data.deanActionDate || data.date || ''}</td>
+                    `;
+                    deanHistoryTableBody.appendChild(row);
                 }
             });
             if (!found) {
                 requestsListDiv.innerHTML = '<span style="color:#888;">No requests awaiting Dean approval.</span>';
+            }
+            if (!foundHistory) {
+                deanHistoryTableBody.innerHTML = '<tr><td colspan="4" style="color:#888;text-align:center;">No history yet.</td></tr>';
             }
         });
     </script>

@@ -168,14 +168,6 @@
             <img src="./z-images/MTU.webp" width="93px" height="64px">
             <p>MOUNTAIN TOP<BR> UNIVERSITY</p>
         </div>
-        <!-- Navigation links -->
-        <div class="nav-links">
-            <a href="home.html">Home</a>
-            <a href="exeat_page.html">Apply for Exeat</a>
-            <a href="dynamic_history.html">History</a>
-            <a href="progress.html">Track Progress</a>
-            <a href="profile.html">Profile</a>
-        </div>
     </nav>
     <div class="admin-container" style="max-width:800px;margin:40px auto;">
         <div class="hod-approval-header">
@@ -186,9 +178,7 @@
             <thead>
                 <tr>
                     <th>Matric Number</th>
-                    <th>Student Email</th>
                     <th>Status</th>
-                    <th>Parent Email</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -204,7 +194,6 @@
             <thead>
                 <tr>
                     <th>Matric Number</th>
-                    <th>Student Email</th>
                     <th>Status</th>
                     <th>Parent Email</th>
                 </tr>
@@ -216,7 +205,6 @@
             <thead>
                 <tr>
                     <th>Matric Number</th>
-                    <th>Student Email</th>
                     <th>Status</th>
                     <th>Parent Email</th>
                 </tr>
@@ -268,9 +256,7 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${data.matricNo || ''}</td>
-                        <td>${data.studentEmail || data.email || ''}</td>
                         <td><span class="status-badge approved">Parent Approved</span></td>
-                        <td>${data.parentEmail || ''}</td>
                         <td><button class="view-hod-btn" data-id="${child.key}">View</button></td>
                     `;
                     hodRequestsTable.appendChild(row);
@@ -279,7 +265,6 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${data.matricNo || ''}</td>
-                        <td>${data.studentEmail || data.email || ''}</td>
                         <td><span class="status-badge approved">HOD Approved</span></td>
                         <td>${data.parentEmail || ''}</td>
                     `;
@@ -289,7 +274,6 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${data.matricNo || ''}</td>
-                        <td>${data.studentEmail || data.email || ''}</td>
                         <td><span class="status-badge rejected">HOD Rejected</span></td>
                         <td>${data.parentEmail || ''}</td>
                     `;
@@ -297,13 +281,13 @@
                 }
             });
             if (!found) {
-                hodRequestsTable.innerHTML = '<tr><td colspan="5" style="color:#888;text-align:center;">No parent-approved exeat requests available.</td></tr>';
+                hodRequestsTable.innerHTML = '<tr><td colspan="3" style="color:#888;text-align:center;">No parent-approved exeat requests available.</td></tr>';
             }
             if (!foundApproved) {
-                hodApprovedTable.innerHTML = '<tr><td colspan="4" style="color:#888;text-align:center;">No HOD approved requests yet.</td></tr>';
+                hodApprovedTable.innerHTML = '<tr><td colspan="3" style="color:#888;text-align:center;">No HOD approved requests yet.</td></tr>';
             }
             if (!foundRejected) {
-                hodRejectedTable.innerHTML = '<tr><td colspan="4" style="color:#888;text-align:center;">No HOD rejected requests yet.</td></tr>';
+                hodRejectedTable.innerHTML = '<tr><td colspan="3" style="color:#888;text-align:center;">No HOD rejected requests yet.</td></tr>';
             }
             document.querySelectorAll('.view-hod-btn').forEach(btn => {
                 btn.onclick = () => {
