@@ -1,5 +1,9 @@
-// This script provides admin functionalities to manage exeat submissions.
-// It fetches submissions from Firebase, displays them in a table, and allows admins to approve or reject requests.
+// =========================
+//  ADMIN.JS - Admin Dashboard Logic
+//  This script manages the admin dashboard for the MTU Exeat System.
+//  It fetches, displays, and manages all exeat requests, including sending to parents and rendering formal letters.
+//  All major functions and event handlers are commented for clarity.
+// =========================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
@@ -23,7 +27,7 @@ const db = getDatabase(app);
 if (window.emailjs) {
     window.emailjs.init('g7tceHPlJ69ldxZZ1'); // Provided EmailJS user ID
 } else {
-    console.error('EmailJS library not loaded!');
+    // EmailJS library not loaded
 }
 
 // Reference to the submissions table in the admin dashboard
@@ -38,7 +42,6 @@ const submissionsRef = ref(db, "contactForm");
 // Fetch submissions from Firebase and display them in the table
 onValue(submissionsRef, (snapshot) => {
     if (!submissionsTable || !approvedTable || !rejectedTable) {
-        console.error('One or more table elements are missing in the DOM.');
         return;
     }
     submissionsTable.innerHTML = "";
@@ -47,13 +50,13 @@ onValue(submissionsRef, (snapshot) => {
     snapshot.forEach((childSnapshot) => {
         const data = childSnapshot.val() || {};
         const status = (data.status || '').toLowerCase();
+        // Approved requests
         if (["parent-approved","hod-approved","dean-approved"].includes(status)) {
-            // Approved requests
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${data.matricNo || ''}</td>
-                <td>${data.email || ''}</td>
                 <td>${data.status || ''}</td>
+                <td>${data.email || ''}</td>
                 <td>${data.parentEmail || ''}</td>
             `;
             approvedTable.appendChild(row);
@@ -62,8 +65,8 @@ onValue(submissionsRef, (snapshot) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${data.matricNo || ''}</td>
-                <td>${data.email || ''}</td>
                 <td>${data.status || ''}</td>
+                <td>${data.email || ''}</td>
                 <td>${data.parentEmail || ''}</td>
             `;
             rejectedTable.appendChild(row);
@@ -83,6 +86,7 @@ onValue(submissionsRef, (snapshot) => {
         }
     });
 
+    // Add event listeners for view and send buttons
     document.querySelectorAll(".view-letter-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
             const id = btn.dataset.id;
@@ -100,7 +104,6 @@ onValue(submissionsRef, (snapshot) => {
                 alert("No parent email found for this student.");
                 return;
             }
-            console.log('Sending to parentEmail:', parentEmail);
             // Update status in database
             const submissionRef = ref(db, `contactForm/${id}`);
             await update(submissionRef, { status: "Sent to Parent" });
@@ -122,12 +125,10 @@ onValue(submissionsRef, (snapshot) => {
                     approve_link: approveLink,
                     reject_link: rejectLink
                 };
-                console.log('EmailJS templateParams:', templateParams);
-                const response = await window.emailjs.send(serviceID, templateID, templateParams, userID);
-                console.log('EmailJS response:', response);
+                // Send email to parent using EmailJS
+                await window.emailjs.send(serviceID, templateID, templateParams, userID);
                 alert('Email sent to parent successfully!');
             } catch (err) {
-                console.error('Error sending email:', err);
                 alert('Error sending email: ' + (err.text || err.message || JSON.stringify(err)));
             }
         });

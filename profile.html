@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #b6e388 0%, #84b000 100%);
+            background: #fff;
             min-height: 100vh;
             font-family: 'Poppins', Arial, sans-serif;
             margin: 0;
@@ -99,7 +99,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            margin-top: 40px;
+            margin-top: 60px;
             gap: 60px;
             width: 100vw;
         }
@@ -107,24 +107,22 @@
             background: #fff;
             border-radius: 18px;
             box-shadow: 0 8px 32px rgba(44,62,80,0.12);
-            padding: 40px 32px 32px 32px;
-            width: 340px;
-            min-height: 480px;
+            padding: 32px 28px 28px 28px;
+            width: 320px;
+            min-height: 420px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-left: 2vw;
-            transition: box-shadow 0.2s;
         }
         .profile-card:hover {
             box-shadow: 0 12px 40px rgba(44,62,80,0.18);
         }
         .profile-pic {
-            width: 130px;
-            height: 150px;
+            width: 110px;
+            height: 120px;
             border-radius: 12px;
             background: #e0e0e0;
-            margin-bottom: 22px;
+            margin-bottom: 18px;
             object-fit: cover;
             box-shadow: 0 2px 8px rgba(44,62,80,0.10);
         }
@@ -136,8 +134,8 @@
         }
         .profile-info {
             width: 100%;
-            margin-bottom: 14px;
-            font-size: 18px;
+            margin-bottom: 10px;
+            font-size: 17px;
             color: #222;
         }
         .profile-label {
@@ -150,12 +148,11 @@
             color: #fff;
             border: none;
             border-radius: 8px;
-            padding: 12px 32px;
-            font-size: 17px;
+            padding: 10px 24px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
-            margin-top: 18px;
+            margin-top: 12px;
             box-shadow: 0 2px 8px rgba(44,62,80,0.08);
         }
         .profile-edit-btn:hover {
@@ -166,42 +163,42 @@
         #editProfileForm input {
             border: 1px solid #d1d5db;
             border-radius: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             font-size: 16px;
         }
         .main-content {
             background: #fff;
             border-radius: 18px;
             box-shadow: 0 8px 32px rgba(44,62,80,0.12);
-            padding: 48px 60px;
+            padding: 60px 60px;
             min-width: 400px;
             max-width: 500px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            height: 480px;
+            height: 420px;
         }
         .welcome-title {
-            font-size: 26px;
+            font-size: 2.1rem;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             text-align: center;
             color: #388e3c;
         }
         .welcome-session {
-            font-size: 19px;
+            font-size: 1.1rem;
             margin-bottom: 8px;
             text-align: center;
             color: #222;
         }
         .welcome-semester {
-            font-size: 19px;
+            font-size: 1.1rem;
             color: #d32f2f;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
             text-align: center;
         }
         .action-btn {
@@ -209,12 +206,15 @@
             color: #fff;
             border: none;
             border-radius: 7px;
-            padding: 13px 0;
-            font-size: 16px;
+            padding: 15px 0;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             width: 220px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
             transition: background 0.2s, box-shadow 0.2s;
             box-shadow: 0 2px 8px rgba(44,62,80,0.08);
         }
@@ -224,22 +224,24 @@
             box-shadow: 0 4px 16px rgba(44,62,80,0.13);
         }
         .quick-links {
-            margin-top: 24px;
+            margin-top: 18px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
         }
         .quick-link {
             background: #fff;
             color: #388e3c;
             border: 2px solid #388e3c;
             border-radius: 7px;
-            padding: 8px 18px;
+            padding: 8px 0;
             font-size: 15px;
             font-weight: 500;
             text-decoration: none;
+            text-align: center;
             transition: background 0.2s, color 0.2s;
+            display: inline-block;
         }
         .quick-link:hover {
             background: #388e3c;
@@ -247,53 +249,16 @@
         }
         footer {
             margin-top: 60px;
-            background: linear-gradient(90deg, #84b000 0%, #8632c7 100%);
+            background-color: rgba(140, 129, 129, 0.733);
             padding: 32px 0 16px 0;
-            color: #fff;
             font-size: 16px;
             letter-spacing: 1px;
             text-align: center;
             box-shadow: 0 -2px 8px rgba(44,62,80,0.08);
         }
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 32px;
-        }
-        .footer-section {
-            flex: 1 1 200px;
-            min-width: 180px;
-        }
-        .footer-section h4 {
-            margin-bottom: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            color: #fff;
-        }
-        .footer-section ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .footer-section ul li {
-            margin-bottom: 8px;
-        }
-        .footer-section ul li a {
-            color: #e6ffe6;
-            text-decoration: none;
-            font-size: 15px;
-            transition: color 0.2s;
-        }
-        .footer-section ul li a:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
+        
         .footer-bottom {
-            margin-top: 24px;
+            margin-bottom: 24px;
             font-size: 14px;
             color: #e6ffe6;
         }
@@ -309,60 +274,52 @@
         }
     </style>
 </head>
-<body>
-    <nav>
-        <div class="Logo">
-            <img src="./z-images/MTU.webp" width="70px" height="50px">
-            <p>MOUNTAIN TOP<br>UNIVERSITY</p>
+<body style="background: #fff; min-height: 100vh; font-family: 'Poppins', Arial, sans-serif; margin: 0;">
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 0 40px; min-height: 80px; background: linear-gradient(90deg, #84b000 0%, #8632c7 100%); color: white; box-shadow: 0 2px 8px rgba(44,62,80,0.08); position: sticky; top: 0; z-index: 100;">
+        <div class="Logo" style="display: flex; align-items: center; gap: 14px;">
+            <img src="./z-images/MTU.webp" width="70px" height="50px" style="border-radius: 8px;">
+            <p style="font-weight: bold; font-size: 22px; margin: 0; color: #fff; letter-spacing: 1px; line-height: 1.1;">MOUNTAIN TOP<br>UNIVERSITY</p>
         </div>
-        <div class="nav-links">
-            <a href="home.html">Home</a>
-            <a href="exeat_page.html">Apply for Exeat</a>
-            <a href="dynamic_history.html">History</a>
-            <a href="progress.html">Track Progress</a>
+        <div class="nav-links" style="display: flex; align-items: center; gap: 28px;">
+            <a href="home.html" style="text-decoration: none; color: white; font-weight: 500; padding: 10px 22px; border-radius: 7px; transition: background-color 0.3s, color 0.3s; font-size: 16px;">Home</a>
+            <a href="exeat_page.html" style="text-decoration: none; color: white; font-weight: 500; padding: 10px 22px; border-radius: 7px; transition: background-color 0.3s, color 0.3s; font-size: 16px;">Apply for Exeat</a>
+            <a href="dynamic_history.html" style="text-decoration: none; color: white; font-weight: 500; padding: 10px 22px; border-radius: 7px; transition: background-color 0.3s, color 0.3s; font-size: 16px;">History</a>
         </div>
     </nav>
-    <div class="hero">
-        <div class="hero-content">
-            <div class="hero-title">Welcome to Your Student Portal</div>
-            <div class="hero-desc">Find your future at MTU, where academic excellence thrives. Here you can manage your profile, apply for exeat, track your progress, and stay connected with the MTU community.</div>
-        </div>
-    </div>
-    <div class="main-layout">
-        <div class="profile-card">
-            <img src="z-images/student.png" alt="Profile Picture" class="profile-pic" id="profilePic">
-            <div class="profile-details">
-                <div class="profile-info"><span class="profile-label">Name:</span> <span id="profileName">Loading...</span></div>
-                <div class="profile-info"><span class="profile-label">Email:</span> <span id="profileEmail">Loading...</span></div>
-                <div class="profile-info"><span class="profile-label">Matric Number:</span> <span id="profileMatric">Loading...</span></div>
-                <div class="profile-info"><span class="profile-label">Parent Email:</span> <span id="profileParentEmail">Loading...</span></div>
-                <button class="profile-edit-btn" id="editProfileBtn">Edit Profile</button>
-                <div id="editProfileForm" style="display:none;margin-top:18px;width:100%;">
-                    <input type="text" id="editName" placeholder="Name" style="margin-bottom:10px;width:100%;padding:8px;">
-                    <input type="text" id="editMatric" placeholder="Matric Number" style="margin-bottom:10px;width:100%;padding:8px;">
-                    <input type="email" id="editParentEmail" placeholder="Parent Email" style="margin-bottom:10px;width:100%;padding:8px;">
-                    <button class="profile-edit-btn" id="saveProfileBtn">Save</button>
+    <main style="display: flex; justify-content: center; align-items: flex-start; gap: 60px; margin-top: 60px; min-height: 70vh;">
+        <section style="background: #fff; border-radius: 18px; box-shadow: 0 8px 32px rgba(44,62,80,0.12); padding: 32px 28px 28px 28px; width: 320px; min-height: 420px; display: flex; flex-direction: column; align-items: center;">
+            <img src="z-images/student.png" alt="Profile Picture" style="width: 110px; height: 120px; border-radius: 12px; background: #e0e0e0; margin-bottom: 18px; object-fit: cover; box-shadow: 0 2px 8px rgba(44,62,80,0.10);">
+            <div style="width: 100%; display: flex; flex-direction: column; align-items: flex-start;">
+                <div style="width: 100%; margin-bottom: 10px; font-size: 17px; color: #222;"><span style="color: #7b8ca7; font-size: 15px; font-weight: 500;">Name:</span> <span id="profileName">Loading...</span></div>
+                <div style="width: 100%; margin-bottom: 10px; font-size: 17px; color: #222;"><span style="color: #7b8ca7; font-size: 15px; font-weight: 500;">Email:</span> <span id="profileEmail">Loading...</span></div>
+                <div style="width: 100%; margin-bottom: 10px; font-size: 17px; color: #222;"><span style="color: #7b8ca7; font-size: 15px; font-weight: 500;">Matric Number:</span> <span id="profileMatric">Loading...</span></div>
+                <div style="width: 100%; margin-bottom: 10px; font-size: 17px; color: #222;"><span style="color: #7b8ca7; font-size: 15px; font-weight: 500;">Parent Email:</span> <span id="profileParentEmail">Loading...</span></div>
+                <button class="profile-edit-btn" id="editProfileBtn" style="background: #388e3c; color: #fff; border: none; border-radius: 8px; padding: 10px 24px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 12px; box-shadow: 0 2px 8px rgba(44,62,80,0.08);">Edit Profile</button>
+                <div id="editProfileForm" style="display:none;margin-top:14px;width:100%;">
+                    <input type="text" id="editName" placeholder="Name" style="margin-bottom:8px;width:100%;padding:8px;">
+                    <input type="text" id="editMatric" placeholder="Matric Number" style="margin-bottom:8px;width:100%;padding:8px;">
+                    <input type="email" id="editParentEmail" placeholder="Parent Email" style="margin-bottom:8px;width:100%;padding:8px;">
+                    <button class="profile-edit-btn" id="saveProfileBtn" style="margin-right:8px;">Save</button>
                     <button class="profile-edit-btn" id="cancelEditBtn" style="background:#eee;color:#333;">Cancel</button>
                 </div>
-                <div id="profileMessage" style="margin-top:12px;font-weight:600;"></div>
+                <div id="profileMessage" style="margin-top:10px;font-weight:600;"></div>
             </div>
-            <div class="quick-links">
-                <a class="quick-link" href="https://mtu.edu.ng/">MTU Main Site</a>
-                <a class="quick-link" href="#">Student's Corner</a>
-                <a class="quick-link" href="#">Help Desk</a>
+            <div style="margin-top: 18px; display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                <a class="quick-link" href="https://mtu.edu.ng/" style="background: #fff; color: #388e3c; border: 2px solid #388e3c; border-radius: 7px; padding: 8px 0; font-size: 15px; font-weight: 500; text-decoration: none; text-align: center; transition: background 0.2s, color 0.2s;">MTU Main Site</a>
+                <a class="quick-link" href="#" style="background: #fff; color: #388e3c; border: 2px solid #388e3c; border-radius: 7px; padding: 8px 0; font-size: 15px; font-weight: 500; text-decoration: none; text-align: center; transition: background 0.2s, color 0.2s;">Student's Corner</a>
+                <a class="quick-link" href="#" style="background: #fff; color: #388e3c; border: 2px solid #388e3c; border-radius: 7px; padding: 8px 0; font-size: 15px; font-weight: 500; text-decoration: none; text-align: center; transition: background 0.2s, color 0.2s;">Help Desk</a>
             </div>
-        </div>
-        <div class="main-content">
-            <div class="welcome-title">Welcome <span id="welcomeName">Student</span></div>
-            <div class="welcome-session">Current Session : <span style="color:#d32f2f;font-weight:600;">2024/2025</span></div>
-            <div class="welcome-semester">Current Semester : <span style="color:#d32f2f;font-weight:600;">Second</span></div>
-            <button class="action-btn">APPLY FOR EXEAT</button>
-            <button class="action-btn">TRACK PROGRESS</button>
-            <button class="action-btn">CHECK HISTORY</button>
-        </div>
-    </div>
+        </section>
+        <section style="background: #fff; border-radius: 18px; box-shadow: 0 8px 32px rgba(44,62,80,0.12); padding: 60px 60px; min-width: 400px; max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; height: 420px;">
+            <div style="font-size: 2.1rem; font-weight: 700; color: #388e3c; margin-bottom: 18px;">Welcome <span id="welcomeName">Student</span></div>
+            <div style="font-size: 1.1rem; color: #222; margin-bottom: 8px;">Current Session : <span style="color:#d32f2f;font-weight:600;">2024/2025</span></div>
+            <div style="font-size: 1.1rem; color: #222; margin-bottom: 32px;">Current Semester : <span style="color:#d32f2f;font-weight:600;">Second</span></div>
+            <a href="exeat_page.html" style="display: inline-block; background: #388e3c; color: #fff; border: none; border-radius: 7px; padding: 15px 0; font-size: 17px; font-weight: 600; text-align: center; width: 220px; margin-bottom: 18px; text-decoration: none; box-shadow: 0 2px 8px rgba(44,62,80,0.08); transition: background 0.2s, box-shadow 0.2s;">APPLY FOR EXEAT</a>
+            <a href="dynamic_history.html" style="display: inline-block; background: #fff; color: #388e3c; border: 2px solid #388e3c; border-radius: 7px; padding: 13px 0; font-size: 16px; font-weight: 600; text-align: center; width: 220px; margin-bottom: 10px; text-decoration: none; box-shadow: 0 2px 8px rgba(44,62,80,0.08); transition: background 0.2s, color 0.2s;">CHECK HISTORY</a>
+        </section>
+    </main>
     <footer>
-        <div class="footer-content">
+        <!-- <div class="footer-content">
             <div class="footer-section">
                 <h4>About MTU</h4>
                 <ul>
@@ -378,7 +335,6 @@
                     <li><a href="home.html">Home</a></li>
                     <li><a href="exeat_page.html">Apply for Exeat</a></li>
                     <li><a href="dynamic_history.html">History</a></li>
-                    <li><a href="progress.html">Track Progress</a></li>
                     <li><a href="profile.html">Profile</a></li>
                 </ul>
             </div>
@@ -398,7 +354,7 @@
                     <li>+234 703 939 5024</li>
                 </ul>
             </div>
-        </div>
+        </div> -->
         <div class="footer-bottom">&copy; MTU 2025. All Rights Reserved.</div>
     </footer>
     <script type="module">
