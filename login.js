@@ -57,6 +57,14 @@ if (submit) {
           setTimeout(() => {
             window.location.href = "admin.html";
           }, 1000);
+        } else if (email === "dean@mtu.edu") {
+          setTimeout(() => {
+            window.location.href = "dean_approval.html";
+          }, 1000);
+        } else if (email === "hod@mtu.edu") {
+          setTimeout(() => {
+            window.location.href = "hod_approval.html";
+          }, 1000);
         } else {
           setTimeout(() => {
             window.location.href = "home.html";
